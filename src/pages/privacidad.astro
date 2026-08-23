@@ -1,0 +1,39 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+	title="Privacidad | CalculaTuPintura"
+	description="Política de privacidad de CalculaTuPintura."
+>
+	<main class="wrap page">
+		<a class="back" href="/">← Volver a la calculadora</a>
+		<h1>Política de privacidad</h1>
+		<p>
+			Esta calculadora funciona íntegramente en tu navegador: los datos
+			que introduces (medidas, tipo de superficie) no se envían a ningún
+			servidor ni se almacenan en ningún sitio. Se pierden en cuanto
+			cierras o recargas la página.
+		</p>
+		<p>
+			Este sitio puede mostrar anuncios de terceros (como Google AdSense)
+			para financiar su mantenimiento. Estos proveedores pueden usar
+			cookies u otras tecnologías para mostrar anuncios relevantes.
+			Puedes gestionar tus preferencias de cookies y anuncios
+			personalizados desde la configuración de tu navegador o en
+			<a href="https://adssettings.google.com/" target="_blank" rel="noopener">Configuración de anuncios de Google</a>.
+		</p>
+		<p>
+			<!-- TODO Jose: revisa y actualiza esta página cuando actives AdSense
+			de verdad, y añade un email de contacto real. -->
+			Para cualquier duda sobre privacidad, puedes escribir a la dirección
+			indicada en <a href="/contacto">contacto</a>.
+		</p>
+	</main>
+	<style>
+		.page { max-width: 40rem; padding-block: 3rem; }
+		.back { font-size: 0.85rem; color: var(--color-ink-soft); text-decoration: none; }
+		h1 { margin: 1.5rem 0 1.2rem; font-size: 2rem; }
+		p { color: var(--color-ink-soft); margin-bottom: 1rem; }
+	</style>
+</Base>

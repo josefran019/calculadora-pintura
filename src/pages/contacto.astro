@@ -1,0 +1,22 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Contacto | CalculaTuPintura" description="Cómo contactar con CalculaTuPintura.">
+	<main class="wrap page">
+		<a class="back" href="/">← Volver a la calculadora</a>
+		<h1>Contacto</h1>
+		<p>
+			<!-- TODO Jose: sustituye por un email real que revises. Un email de
+			contacto simple es uno de los requisitos que suele pedir AdSense. -->
+			Puedes escribirme a <a href="mailto:tu-email@ejemplo.com">tu-email@ejemplo.com</a>
+			para consultas, correcciones o sugerencias sobre la calculadora.
+		</p>
+	</main>
+	<style>
+		.page { max-width: 40rem; padding-block: 3rem; }
+		.back { font-size: 0.85rem; color: var(--color-ink-soft); text-decoration: none; }
+		h1 { margin: 1.5rem 0 1.2rem; font-size: 2rem; }
+		p { color: var(--color-ink-soft); }
+	</style>
+</Base>

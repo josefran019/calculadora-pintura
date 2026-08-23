@@ -1,0 +1,100 @@
+---
+interface Props {
+	title: string;
+	description: string;
+}
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content={description} />
+		<title>{title}</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--color-bg: #eae6dd;
+		--color-bg-panel: #f6f4ee;
+		--color-ink: #26241f;
+		--color-ink-soft: #56534a;
+		--color-line: #d8d3c5;
+
+		--color-ochre: #c98a2b;
+		--color-ochre-ink: #6b4713;
+		--color-petrol: #2b6e6e;
+		--color-petrol-ink: #163a3a;
+		--color-oxide: #a83e2c;
+		--color-oxide-ink: #5c2015;
+		--color-sage: #6b7a55;
+		--color-sage-ink: #37401c;
+
+		--font-display: "Archivo Black", sans-serif;
+		--font-body: "Inter", sans-serif;
+		--font-mono: "IBM Plex Mono", monospace;
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+
+	html {
+		scroll-behavior: smooth;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		html {
+			scroll-behavior: auto;
+		}
+		* {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+		}
+	}
+
+	body {
+		margin: 0;
+		background: var(--color-bg);
+		color: var(--color-ink);
+		font-family: var(--font-body);
+		line-height: 1.55;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	h1,
+	h2,
+	h3 {
+		font-family: var(--font-display);
+		font-weight: 400;
+		line-height: 1.05;
+		letter-spacing: -0.01em;
+		margin: 0;
+	}
+
+	a {
+		color: var(--color-petrol-ink);
+	}
+
+	:focus-visible {
+		outline: 3px solid var(--color-petrol);
+		outline-offset: 3px;
+	}
+
+	button {
+		font-family: inherit;
+	}
+</style>

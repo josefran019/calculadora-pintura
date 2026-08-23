@@ -1,0 +1,52 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+	title="Sobre mí | CalculaTuPintura"
+	description="Quién ha hecho esta calculadora de pintura y por qué."
+>
+	<main class="wrap page">
+		<a class="back" href="/">← Volver a la calculadora</a>
+		<h1>Sobre mí</h1>
+		<p>
+			Soy estudiante del Grado en Edificación en la ETSIE (Universidad de
+			Granada). Creé esta calculadora porque me cansé de ver siempre la
+			misma fórmula explicada en un artículo distinto, sin ninguna
+			herramienta donde simplemente meter mis medidas y obtener un
+			resultado.
+		</p>
+		<p>
+			Los rendimientos que uso están basados en los valores estándar del
+			sector de la construcción. No son un sustituto de la ficha técnica
+			de tu pintura ni del criterio de un profesional en obras complejas
+			— para eso, la etiqueta del fabricante y un buen pintor siempre
+			mandan.
+		</p>
+		<p>
+			<!-- TODO Jose: cambia esto por tu nombre real y, si quieres, tu email o
+			redes, para dar más confianza y transparencia al sitio. -->
+			Si tienes dudas o sugerencias sobre la calculadora, puedes escribirme
+			desde la página de <a href="/contacto">contacto</a>.
+		</p>
+	</main>
+	<style>
+		.page {
+			max-width: 40rem;
+			padding-block: 3rem;
+		}
+		.back {
+			font-size: 0.85rem;
+			color: var(--color-ink-soft);
+			text-decoration: none;
+		}
+		h1 {
+			margin: 1.5rem 0 1.2rem;
+			font-size: 2rem;
+		}
+		p {
+			color: var(--color-ink-soft);
+			margin-bottom: 1rem;
+		}
+	</style>
+</Base>

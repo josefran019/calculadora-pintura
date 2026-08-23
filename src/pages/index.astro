@@ -1,0 +1,803 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+	title="Calculadora de pintura: ¿cuántos litros necesito? | CalculaTuPintura"
+	description="Calcula en segundos cuántos litros de pintura necesitas según los metros cuadrados, el tipo de superficie y el número de manos. Gratis y sin registro."
+>
+	<header class="topbar">
+		<div class="wrap topbar-inner">
+			<span class="brand">
+				<span class="brand-swatch" aria-hidden="true"></span>
+				CalculaTuPintura
+			</span>
+			<nav class="topnav">
+				<a href="#calculadora">Calculadora</a>
+				<a href="#como-funciona">Cómo funciona</a>
+				<a href="#faq">Preguntas</a>
+			</nav>
+		</div>
+	</header>
+
+	<main>
+		<section class="hero" id="calculadora">
+			<div class="wrap hero-grid">
+				<div class="hero-text">
+					<p class="eyebrow">Calculadora gratuita · Sin registro</p>
+					<h1>¿Cuánta pintura<br />necesitas comprar?</h1>
+					<p class="hero-lede">
+						Añade cada pared con su propio tipo de superficie. Te
+						decimos los litros exactos, cuántos botes comprar y cuánto
+						tiempo te llevará.
+					</p>
+				</div>
+
+				<div class="calc-panel">
+					<div class="field-group">
+						<label>Paredes a pintar</label>
+						<div id="walls-container" class="walls-container">
+							<div class="wall-card" data-wall-row>
+								<div class="wall-card-top">
+									<div class="wall-field">
+										<span class="wall-field-label">Ancho (m)</span>
+										<input type="number" class="wall-ancho" min="0" step="0.1" placeholder="0" />
+									</div>
+									<span class="wall-times">×</span>
+									<div class="wall-field">
+										<span class="wall-field-label">Alto (m)</span>
+										<input type="number" class="wall-alto" min="0" step="0.1" placeholder="0" />
+									</div>
+									<div class="wall-field wall-field-huecos">
+										<span class="wall-field-label">Huecos (m²)</span>
+										<input type="number" class="wall-huecos" min="0" step="0.1" placeholder="0" />
+									</div>
+									<button type="button" class="wall-remove" data-remove-wall aria-label="Quitar esta pared" hidden>✕</button>
+								</div>
+								<div class="wall-field wall-field-tipo">
+									<span class="wall-field-label">Tipo de superficie</span>
+									<select class="wall-tipo">
+										<option value="12">Lisa, ya pintada (~12 m²/L)</option>
+										<option value="10" selected>Normal / yeso liso (~10 m²/L)</option>
+										<option value="7">Porosa / gotelé (~7 m²/L)</option>
+										<option value="14">Madera / metal, esmalte (~14 m²/L)</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<button type="button" class="link-btn" id="add-wall">+ Añadir otra pared</button>
+
+						<p class="superficie-total">
+							Superficie total: <strong id="superficie-total-value">0 m²</strong>
+						</p>
+					</div>
+
+					<fieldset class="field-group">
+						<legend>Número de manos</legend>
+						<div class="toggle-group" role="radiogroup" aria-label="Número de manos">
+							<button type="button" class="toggle-btn" data-manos="1" aria-pressed="false">1 mano</button>
+							<button type="button" class="toggle-btn" data-manos="2" aria-pressed="true">2 manos</button>
+						</div>
+					</fieldset>
+
+					<fieldset class="field-group">
+						<legend>Tu experiencia pintando</legend>
+						<div class="toggle-group" role="radiogroup" aria-label="Experiencia">
+							<button type="button" class="toggle-btn" data-exp="6" aria-pressed="true">Principiante</button>
+							<button type="button" class="toggle-btn" data-exp="12" aria-pressed="false">Con experiencia</button>
+						</div>
+					</fieldset>
+
+					<div class="result-panel" id="result-panel">
+						<p class="result-label">Necesitas comprar</p>
+						<p class="result-value"><span id="result-litros">—</span><span class="result-unit">litros</span></p>
+						<p class="result-cans" id="result-cans"></p>
+						<div class="result-divider"></div>
+						<p class="result-time">
+							Tiempo estimado: <strong id="result-tiempo">—</strong>
+						</p>
+						<p class="result-note">
+							Incluye un 10% extra de margen de pintura. El tiempo es
+							solo de aplicación: no cuenta el secado entre manos
+							(consulta el envase, suele ser de 2 a 4 horas).
+						</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="content" id="como-funciona">
+			<div class="wrap content-grid">
+				<article>
+					<h2>Cómo se calcula</h2>
+					<p>
+						El cálculo parte de una idea sencilla: cada litro de pintura
+						cubre una superficie determinada, llamada <strong>rendimiento</strong>,
+						que se mide en metros cuadrados por litro (m²/L). Ese
+						rendimiento cambia según lo porosa que sea la pared, así que
+						cada pared se calcula por separado con su propio tipo de
+						superficie y luego se suman los litros.
+					</p>
+					<p class="formula">
+						litros de una pared = (superficie ÷ rendimiento) × manos × 1,10
+					</p>
+					<p>
+						El 1,10 añade un 10% de margen: cubre los recortes en
+						esquinas, los retoques y que siempre es mejor que sobre un
+						poco a que falte a mitad de pared con la tienda ya cerrada.
+					</p>
+
+					<h3>Rendimiento orientativo por tipo de superficie</h3>
+					<table class="yield-table">
+						<thead>
+							<tr>
+								<th>Superficie</th>
+								<th>Rendimiento</th>
+								<th>Manos habituales</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Pared lisa ya pintada</td>
+								<td>10&ndash;14 m²/L</td>
+								<td>1&ndash;2</td>
+							</tr>
+							<tr>
+								<td>Yeso liso nuevo</td>
+								<td>8&ndash;10 m²/L</td>
+								<td>2</td>
+							</tr>
+							<tr>
+								<td>Gotelé o superficie porosa</td>
+								<td>5&ndash;7 m²/L</td>
+								<td>2</td>
+							</tr>
+							<tr>
+								<td>Madera o metal con esmalte</td>
+								<td>10&ndash;16 m²/L</td>
+								<td>2</td>
+							</tr>
+						</tbody>
+					</table>
+					<p class="table-note">
+						Estos son valores orientativos habituales del sector. El
+						rendimiento real depende del fabricante: revisa siempre el
+						dato que indica el propio envase para ese producto
+						concreto. El tiempo estimado usa una velocidad orientativa
+						de 6 m²/h para principiantes y 12 m²/h con experiencia;
+						varía mucho según la preparación previa y el tipo de
+						rodillo o brocha.
+					</p>
+				</article>
+
+				<aside class="about-card">
+					<h3>Sobre esta calculadora</h3>
+					<p>
+						Hecha por un estudiante de Grado en Edificación (ETSIE,
+						Universidad de Granada). La fórmula usa los rendimientos
+						estándar del sector de la construcción; no sustituye la
+						recomendación del fabricante de tu pintura ni el consejo de
+						un profesional para trabajos complejos.
+					</p>
+					<p class="about-updated">Actualizado 2026</p>
+				</aside>
+			</div>
+		</section>
+
+		<section class="content faq" id="faq">
+			<div class="wrap">
+				<h2>Preguntas frecuentes</h2>
+				<div class="faq-list">
+					<details>
+						<summary>¿Cuántas manos de pintura necesito?</summary>
+						<p>
+							Lo habitual son dos manos, sobre todo si cambias de color
+							o la pared es nueva. Con una pared ya pintada de un color
+							parecido y en buen estado, a veces basta con una.
+						</p>
+					</details>
+					<details>
+						<summary>¿Por qué mi bote dice un rendimiento distinto?</summary>
+						<p>
+							Cada fabricante formula su pintura de forma distinta:
+							las de gama alta suelen cubrir más por litro que las
+							económicas. Si el envase indica un rendimiento
+							concreto, úsalo en vez del valor orientativo de esta
+							calculadora para un resultado más preciso.
+						</p>
+					</details>
+					<details>
+						<summary>¿Puedo poner un tipo de superficie distinto por pared?</summary>
+						<p>
+							Sí. Cada pared tiene su propio desplegable de tipo de
+							superficie, así que puedes mezclar, por ejemplo, una
+							pared lisa con otra de gotelé en la misma habitación y
+							el resultado tendrá en cuenta cada una por separado.
+						</p>
+					</details>
+					<details>
+						<summary>¿Qué tamaño de bote me conviene comprar?</summary>
+						<p>
+							Compra siempre toda la pintura de una vez para asegurar
+							que el tono es idéntico en todas las paredes, y
+							redondea hacia arriba: es preferible que sobre un poco
+							a quedarte corto a mitad de faena.
+						</p>
+					</details>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<div class="wrap footer-inner">
+			<p>CalculaTuPintura — herramienta gratuita de estimación.</p>
+			<nav class="footer-nav">
+				<a href="/sobre">Sobre mí</a>
+				<a href="/contacto">Contacto</a>
+				<a href="/privacidad">Privacidad</a>
+			</nav>
+		</div>
+	</footer>
+
+	<style>
+		.wrap {
+			max-width: 72rem;
+			margin: 0 auto;
+			padding-inline: 1.5rem;
+		}
+
+		/* Topbar */
+		.topbar {
+			border-bottom: 1px solid var(--color-line);
+			background: var(--color-bg);
+			position: sticky;
+			top: 0;
+			z-index: 10;
+		}
+		.topbar-inner {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding-block: 1.1rem;
+		}
+		.brand {
+			display: flex;
+			align-items: center;
+			gap: 0.6rem;
+			font-family: var(--font-display);
+			font-size: 1.1rem;
+		}
+		.brand-swatch {
+			width: 1.1rem;
+			height: 1.1rem;
+			border-radius: 3px;
+			background: linear-gradient(135deg, var(--color-ochre) 50%, var(--color-petrol) 50%);
+			display: inline-block;
+		}
+		.topnav {
+			display: flex;
+			gap: 1.5rem;
+			font-size: 0.95rem;
+		}
+		.topnav a {
+			text-decoration: none;
+			color: var(--color-ink-soft);
+		}
+		.topnav a:hover {
+			color: var(--color-ink);
+		}
+
+		/* Hero */
+		.hero {
+			padding-block: 3rem 4rem;
+		}
+		.hero-grid {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 2.5rem;
+		}
+		@media (min-width: 900px) {
+			.hero-grid {
+				grid-template-columns: 1fr 1fr;
+				align-items: start;
+			}
+		}
+		.eyebrow {
+			font-family: var(--font-mono);
+			font-size: 0.8rem;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+			color: var(--color-petrol-ink);
+			margin: 0 0 0.9rem;
+		}
+		h1 {
+			font-size: clamp(2.1rem, 5vw, 3.1rem);
+			color: var(--color-ink);
+		}
+		.hero-lede {
+			margin-top: 1.2rem;
+			font-size: 1.1rem;
+			color: var(--color-ink-soft);
+			max-width: 34rem;
+		}
+
+		/* Calc panel */
+		.calc-panel {
+			background: var(--color-bg-panel);
+			border: 1px solid var(--color-line);
+			border-radius: 14px;
+			padding: 1.75rem;
+			display: flex;
+			flex-direction: column;
+			gap: 1.5rem;
+			box-shadow: 0 1px 0 rgba(38, 36, 31, 0.03);
+		}
+		.field-group {
+			display: flex;
+			flex-direction: column;
+			gap: 0.6rem;
+			border: none;
+			margin: 0;
+			padding: 0;
+		}
+		label,
+		legend {
+			font-size: 0.92rem;
+			font-weight: 600;
+			padding: 0;
+		}
+		.link-btn {
+			background: none;
+			border: none;
+			color: var(--color-petrol-ink);
+			font-size: 0.85rem;
+			cursor: pointer;
+			text-decoration: underline;
+			padding: 0;
+			align-self: flex-start;
+		}
+
+		/* Walls */
+		.walls-container {
+			display: flex;
+			flex-direction: column;
+			gap: 0.7rem;
+		}
+		.wall-card {
+			border: 1.5px solid var(--color-line);
+			border-radius: 12px;
+			padding: 0.8rem;
+			background: #fff;
+			display: flex;
+			flex-direction: column;
+			gap: 0.6rem;
+		}
+		.wall-card-top {
+			display: grid;
+			grid-template-columns: 1fr auto 1fr 1fr auto;
+			align-items: end;
+			gap: 0.5rem;
+		}
+		.wall-field {
+			display: flex;
+			flex-direction: column;
+			gap: 0.25rem;
+		}
+		.wall-field-label {
+			font-size: 0.7rem;
+			color: var(--color-ink-soft);
+			font-weight: 500;
+		}
+		.wall-card input,
+		.wall-card select {
+			width: 100%;
+			font-family: var(--font-mono);
+			font-size: 1rem;
+			padding: 0.5rem 0.6rem;
+			border: 1.5px solid var(--color-line);
+			border-radius: 8px;
+			background: #fff;
+			color: var(--color-ink);
+		}
+		.wall-field-tipo select {
+			font-family: var(--font-body);
+			font-size: 0.85rem;
+		}
+		.wall-times {
+			color: var(--color-ink-soft);
+			padding-bottom: 0.55rem;
+			font-size: 0.85rem;
+		}
+		.wall-remove {
+			background: #fff;
+			border: 1.5px solid var(--color-line);
+			border-radius: 8px;
+			width: 2rem;
+			height: 2rem;
+			cursor: pointer;
+			color: var(--color-oxide-ink);
+			font-size: 0.8rem;
+			margin-bottom: 1px;
+		}
+
+		.superficie-total {
+			margin: 0.3rem 0 0;
+			font-size: 0.92rem;
+			color: var(--color-ink-soft);
+		}
+		.superficie-total strong {
+			color: var(--color-ink);
+			font-family: var(--font-mono);
+		}
+
+		/* Toggle groups */
+		.toggle-group {
+			display: flex;
+			gap: 0.5rem;
+		}
+		.toggle-btn {
+			flex: 1;
+			background: #fff;
+			border: 1.5px solid var(--color-line);
+			border-radius: 8px;
+			padding: 0.6rem;
+			font-size: 0.9rem;
+			cursor: pointer;
+			font-weight: 600;
+		}
+		.toggle-btn[aria-pressed="true"] {
+			border-color: var(--color-ink);
+			background: var(--color-ink);
+			color: var(--color-bg-panel);
+		}
+
+		/* Result */
+		.result-panel {
+			background: var(--color-ink);
+			color: var(--color-bg-panel);
+			border-radius: 10px;
+			padding: 1.4rem 1.5rem;
+			text-align: center;
+		}
+		.result-label {
+			margin: 0;
+			font-size: 0.8rem;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+			color: #c9c6bb;
+		}
+		.result-value {
+			margin: 0.3rem 0 0;
+			font-family: var(--font-mono);
+			font-size: 2.6rem;
+			font-weight: 600;
+		}
+		.result-unit {
+			font-size: 1rem;
+			margin-left: 0.4rem;
+			color: #c9c6bb;
+		}
+		.result-cans {
+			margin: 0.5rem 0 0;
+			font-size: 0.9rem;
+			color: #e7e4d9;
+		}
+		.result-divider {
+			height: 1px;
+			background: rgba(255, 255, 255, 0.12);
+			margin: 0.9rem 0;
+		}
+		.result-time {
+			margin: 0;
+			font-size: 0.95rem;
+			color: #e7e4d9;
+		}
+		.result-time strong {
+			font-family: var(--font-mono);
+			color: #fff;
+		}
+		.result-note {
+			margin: 0.7rem 0 0;
+			font-size: 0.75rem;
+			color: #a8a598;
+		}
+
+		/* Content */
+		.content {
+			padding-block: 3rem;
+			border-top: 1px solid var(--color-line);
+		}
+		.content-grid {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 2.5rem;
+		}
+		@media (min-width: 900px) {
+			.content-grid {
+				grid-template-columns: 2fr 1fr;
+			}
+		}
+		h2 {
+			font-size: 1.7rem;
+			margin-bottom: 1rem;
+		}
+		h3 {
+			font-size: 1.05rem;
+			margin: 1.6rem 0 0.7rem;
+		}
+		.formula {
+			font-family: var(--font-mono);
+			background: var(--color-bg-panel);
+			border: 1px solid var(--color-line);
+			border-radius: 8px;
+			padding: 0.9rem 1.1rem;
+			font-size: 0.9rem;
+		}
+		.yield-table {
+			width: 100%;
+			border-collapse: collapse;
+			font-size: 0.9rem;
+			margin-top: 0.5rem;
+		}
+		.yield-table th,
+		.yield-table td {
+			text-align: left;
+			padding: 0.6rem 0.7rem;
+			border-bottom: 1px solid var(--color-line);
+		}
+		.yield-table th {
+			font-family: var(--font-mono);
+			font-size: 0.75rem;
+			text-transform: uppercase;
+			color: var(--color-ink-soft);
+		}
+		.table-note {
+			font-size: 0.82rem;
+			color: var(--color-ink-soft);
+			margin-top: 0.7rem;
+		}
+		.about-card {
+			background: var(--color-bg-panel);
+			border: 1px solid var(--color-line);
+			border-radius: 12px;
+			padding: 1.4rem;
+			height: fit-content;
+		}
+		.about-card p {
+			font-size: 0.9rem;
+			color: var(--color-ink-soft);
+		}
+		.about-updated {
+			font-family: var(--font-mono);
+			font-size: 0.75rem;
+			color: var(--color-ink-soft);
+		}
+
+		/* FAQ */
+		.faq-list {
+			display: flex;
+			flex-direction: column;
+			gap: 0.7rem;
+			max-width: 44rem;
+		}
+		details {
+			border: 1px solid var(--color-line);
+			border-radius: 10px;
+			padding: 0.9rem 1.1rem;
+			background: var(--color-bg-panel);
+		}
+		summary {
+			cursor: pointer;
+			font-weight: 600;
+		}
+		details p {
+			margin-top: 0.6rem;
+			color: var(--color-ink-soft);
+			font-size: 0.92rem;
+		}
+
+		/* Footer */
+		.site-footer {
+			border-top: 1px solid var(--color-line);
+			padding-block: 1.5rem;
+			margin-top: 1rem;
+		}
+		.footer-inner {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			gap: 1rem;
+			font-size: 0.85rem;
+			color: var(--color-ink-soft);
+		}
+		.footer-nav {
+			display: flex;
+			gap: 1.2rem;
+		}
+		.footer-nav a {
+			color: var(--color-ink-soft);
+			text-decoration: none;
+		}
+		.footer-nav a:hover {
+			text-decoration: underline;
+		}
+
+		@media (max-width: 560px) {
+			.wall-card-top {
+				grid-template-columns: 1fr auto 1fr;
+			}
+			.wall-field-huecos {
+				grid-column: 1 / -1;
+			}
+			.wall-remove {
+				grid-column: 3;
+				justify-self: end;
+			}
+		}
+	</style>
+
+	<script>
+		const $ = (id: string) => document.getElementById(id) as HTMLElement;
+
+		const wallsContainer = $("walls-container") as HTMLElement;
+		const addWallBtn = $("add-wall");
+		const superficieTotalValue = $("superficie-total-value");
+		const manosBtns = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-manos]"));
+		const expBtns = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-exp]"));
+		const resultLitros = $("result-litros");
+		const resultCans = $("result-cans");
+		const resultTiempo = $("result-tiempo");
+
+		let manos = 2;
+		let velocidad = 6;
+
+		function wallCardTemplate(): HTMLElement {
+			const card = document.createElement("div");
+			card.className = "wall-card";
+			card.setAttribute("data-wall-row", "");
+			card.innerHTML = `
+				<div class="wall-card-top">
+					<div class="wall-field">
+						<span class="wall-field-label">Ancho (m)</span>
+						<input type="number" class="wall-ancho" min="0" step="0.1" placeholder="0" />
+					</div>
+					<span class="wall-times">×</span>
+					<div class="wall-field">
+						<span class="wall-field-label">Alto (m)</span>
+						<input type="number" class="wall-alto" min="0" step="0.1" placeholder="0" />
+					</div>
+					<div class="wall-field wall-field-huecos">
+						<span class="wall-field-label">Huecos (m²)</span>
+						<input type="number" class="wall-huecos" min="0" step="0.1" placeholder="0" />
+					</div>
+					<button type="button" class="wall-remove" data-remove-wall aria-label="Quitar esta pared">✕</button>
+				</div>
+				<div class="wall-field wall-field-tipo">
+					<span class="wall-field-label">Tipo de superficie</span>
+					<select class="wall-tipo">
+						<option value="12">Lisa, ya pintada (~12 m²/L)</option>
+						<option value="10" selected>Normal / yeso liso (~10 m²/L)</option>
+						<option value="7">Porosa / gotelé (~7 m²/L)</option>
+						<option value="14">Madera / metal, esmalte (~14 m²/L)</option>
+					</select>
+				</div>
+			`;
+			return card;
+		}
+
+		function refreshRemoveButtons() {
+			const rows = wallsContainer.querySelectorAll("[data-wall-row]");
+			rows.forEach((row) => {
+				const btn = row.querySelector("[data-remove-wall]") as HTMLButtonElement;
+				btn.hidden = rows.length <= 1;
+			});
+		}
+
+		function attachRowListeners(row: HTMLElement) {
+			const inputs = row.querySelectorAll("input, select");
+			inputs.forEach((el) => el.addEventListener("input", calcular));
+			const removeBtn = row.querySelector("[data-remove-wall]") as HTMLButtonElement;
+			removeBtn.addEventListener("click", () => {
+				row.remove();
+				refreshRemoveButtons();
+				calcular();
+			});
+		}
+
+		attachRowListeners(wallsContainer.querySelector("[data-wall-row]") as HTMLElement);
+
+		addWallBtn.addEventListener("click", () => {
+			const card = wallCardTemplate();
+			wallsContainer.appendChild(card);
+			attachRowListeners(card);
+			refreshRemoveButtons();
+			calcular();
+		});
+
+		manosBtns.forEach((btn) => {
+			btn.addEventListener("click", () => {
+				manosBtns.forEach((b) => b.setAttribute("aria-pressed", "false"));
+				btn.setAttribute("aria-pressed", "true");
+				manos = parseFloat(btn.dataset.manos || "2");
+				calcular();
+			});
+		});
+
+		expBtns.forEach((btn) => {
+			btn.addEventListener("click", () => {
+				expBtns.forEach((b) => b.setAttribute("aria-pressed", "false"));
+				btn.setAttribute("aria-pressed", "true");
+				velocidad = parseFloat(btn.dataset.exp || "6");
+				calcular();
+			});
+		});
+
+		function suggestCans(litros: number): string {
+			if (litros <= 0) return "";
+			const sizes = [15, 4, 0.75];
+			let remaining = litros;
+			const parts: string[] = [];
+			for (const size of sizes) {
+				const count = Math.floor(remaining / size + 1e-9);
+				if (count > 0) {
+					parts.push(`${count} de ${size} L`);
+					remaining = +(remaining - count * size).toFixed(2);
+				}
+			}
+			if (remaining > 0.05) {
+				parts.push("1 de 0,75 L");
+			}
+			return "Por ejemplo: " + parts.join(" + ");
+		}
+
+		function formatTiempo(horas: number): string {
+			if (horas <= 0) return "—";
+			if (horas < 1) {
+				const min = Math.round(horas * 60);
+				return `${min} min`;
+			}
+			const h = Math.floor(horas);
+			const min = Math.round((horas - h) * 60);
+			return min > 0 ? `${h} h ${min} min` : `${h} h`;
+		}
+
+		function calcular() {
+			const rows = Array.from(wallsContainer.querySelectorAll("[data-wall-row]"));
+			let superficieTotal = 0;
+			let litrosSinRedondear = 0;
+
+			rows.forEach((row) => {
+				const ancho = parseFloat((row.querySelector(".wall-ancho") as HTMLInputElement).value) || 0;
+				const alto = parseFloat((row.querySelector(".wall-alto") as HTMLInputElement).value) || 0;
+				const huecos = parseFloat((row.querySelector(".wall-huecos") as HTMLInputElement).value) || 0;
+				const rendimiento = parseFloat((row.querySelector(".wall-tipo") as HTMLSelectElement).value) || 10;
+
+				const area = Math.max(ancho * alto - huecos, 0);
+				superficieTotal += area;
+
+				if (area > 0) {
+					litrosSinRedondear += (area / rendimiento) * manos * 1.1;
+				}
+			});
+
+			superficieTotalValue.textContent = `${superficieTotal.toFixed(1)} m²`;
+
+			if (superficieTotal <= 0) {
+				resultLitros.textContent = "—";
+				resultCans.textContent = "";
+				resultTiempo.textContent = "—";
+				return;
+			}
+
+			const litrosRedondeados = Math.ceil(litrosSinRedondear * 2) / 2;
+			resultLitros.textContent = litrosRedondeados.toString().replace(".", ",");
+			resultCans.textContent = suggestCans(litrosRedondeados);
+
+			const horas = (superficieTotal * manos) / velocidad;
+			resultTiempo.textContent = formatTiempo(horas);
+		}
+
+		refreshRemoveButtons();
+	</script>
+</Base>

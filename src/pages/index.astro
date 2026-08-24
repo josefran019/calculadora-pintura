@@ -48,6 +48,7 @@ import Base from "../layouts/Base.astro";
 										<span class="wall-field-label">Alto (m)</span>
 										<input type="number" class="wall-alto" min="0" step="0.1" placeholder="0" />
 									</div>
+									<button type="button" class="wall-duplicate" data-duplicate-wall aria-label="Duplicar esta pared" title="Duplicar esta pared">⧉</button>
 									<button type="button" class="wall-remove" data-remove-wall aria-label="Quitar esta pared" hidden>✕</button>
 								</div>
 								<div class="wall-card-bottom">
@@ -83,7 +84,10 @@ import Base from "../layouts/Base.astro";
 						<div class="preview-block">
 							<div class="preview-header">
 								<p class="preview-label">Vista previa (orientativa, no a escala real)</p>
-								<button type="button" class="link-btn" id="expand-preview">⤢ Ampliar</button>
+								<div class="preview-actions">
+									<button type="button" class="link-btn" id="download-preview">⇩ Descargar imagen</button>
+									<button type="button" class="link-btn" id="expand-preview">⤢ Ampliar</button>
+								</div>
 							</div>
 							<div class="preview-floor" id="preview-floor"></div>
 
@@ -113,10 +117,19 @@ import Base from "../layouts/Base.astro";
 						</div>
 					</fieldset>
 
+					<div class="field-group">
+						<label for="precio-litro">Precio por litro (opcional)</label>
+						<div class="precio-input">
+							<span>€</span>
+							<input type="number" id="precio-litro" min="0" step="0.5" placeholder="0" />
+						</div>
+					</div>
+
 					<div class="result-panel" id="result-panel">
 						<p class="result-label">Necesitas comprar</p>
 						<p class="result-value"><span id="result-litros">—</span><span class="result-unit">litros</span></p>
 						<p class="result-cans" id="result-cans"></p>
+						<p class="result-coste" id="result-coste" hidden></p>
 						<div class="result-divider"></div>
 						<p class="result-time">
 							Tiempo estimado: <strong id="result-tiempo">—</strong>
@@ -439,7 +452,7 @@ import Base from "../layouts/Base.astro";
 		}
 		.wall-card-top {
 			display: grid;
-			grid-template-columns: 1fr auto 1fr auto;
+			grid-template-columns: 1fr auto 1fr auto auto;
 			align-items: end;
 			gap: 0.5rem;
 		}
@@ -487,7 +500,12 @@ import Base from "../layouts/Base.astro";
 			align-items: center;
 			justify-content: space-between;
 			gap: 0.6rem;
+			flex-wrap: wrap;
 			margin: 0 0 0.5rem;
+		}
+		.preview-actions {
+			display: flex;
+			gap: 0.9rem;
 		}
 		.preview-label {
 			font-size: 0.78rem;
@@ -587,6 +605,17 @@ import Base from "../layouts/Base.astro";
 			font-size: 0.8rem;
 			margin-bottom: 1px;
 		}
+		.wall-duplicate {
+			background: #fff;
+			border: 1.5px solid var(--color-line);
+			border-radius: 8px;
+			width: 2rem;
+			height: 2rem;
+			cursor: pointer;
+			color: var(--color-petrol-ink);
+			font-size: 0.9rem;
+			margin-bottom: 1px;
+		}
 
 		.superficie-total {
 			margin: 0.3rem 0 0;
@@ -649,6 +678,35 @@ import Base from "../layouts/Base.astro";
 			margin: 0.5rem 0 0;
 			font-size: 0.9rem;
 			color: #e7e4d9;
+		}
+		.result-coste {
+			margin: 0.4rem 0 0;
+			font-size: 0.95rem;
+			color: var(--color-ochre);
+			font-weight: 600;
+		}
+		.precio-input {
+			position: relative;
+			display: flex;
+			align-items: center;
+		}
+		.precio-input input {
+			width: 100%;
+			font-family: var(--font-mono);
+			font-size: 1.1rem;
+			padding: 0.6rem 0.9rem 0.6rem 1.8rem;
+			border: 1.5px solid var(--color-line);
+			border-radius: 10px;
+			background: #fff;
+			color: var(--color-ink);
+		}
+		.precio-input span {
+			position: absolute;
+			left: 0.9rem;
+			font-family: var(--font-mono);
+			color: var(--color-ink-soft);
+			font-size: 1rem;
+			pointer-events: none;
 		}
 		.result-divider {
 			height: 1px;
@@ -895,12 +953,51 @@ import Base from "../layouts/Base.astro";
 			const isExpanded = previewFloor.classList.toggle("expanded");
 			expandBtn.textContent = isExpanded ? "⤡ Reducir" : "⤢ Ampliar";
 		});
+
+		const downloadBtn = $("download-preview") as HTMLButtonElement;
+		downloadBtn.addEventListener("click", () => {
+			const svgEl = previewFloor.querySelector("svg");
+			if (!svgEl) return;
+			const viewBox = svgEl.viewBox.baseVal;
+			if (!viewBox || viewBox.width <= 0) return;
+
+			const svgData = new XMLSerializer().serializeToString(svgEl);
+			const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+			const url = URL.createObjectURL(svgBlob);
+			const img = new Image();
+			img.onload = () => {
+				const canvas = document.createElement("canvas");
+				canvas.width = 1400;
+				canvas.height = Math.round(1400 * (viewBox.height / viewBox.width));
+				const ctx = canvas.getContext("2d");
+				if (!ctx) {
+					URL.revokeObjectURL(url);
+					return;
+				}
+				ctx.fillStyle = "#f6f4ee";
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+				ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+				URL.revokeObjectURL(url);
+				canvas.toBlob((blob) => {
+					if (!blob) return;
+					const link = document.createElement("a");
+					link.download = "vista-previa-pintura.png";
+					link.href = URL.createObjectURL(blob);
+					link.click();
+				});
+			};
+			img.src = url;
+		});
+
 		const superficieTotalValue = $("superficie-total-value");
 		const manosBtns = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-manos]"));
 		const expBtns = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-exp]"));
 		const resultLitros = $("result-litros");
 		const resultCans = $("result-cans");
+		const resultCoste = $("result-coste");
 		const resultTiempo = $("result-tiempo");
+		const precioInput = $("precio-litro") as HTMLInputElement;
+		precioInput.addEventListener("input", calcular);
 
 		let manos = 2;
 		let velocidad = 6;
@@ -920,6 +1017,7 @@ import Base from "../layouts/Base.astro";
 						<span class="wall-field-label">Alto (m)</span>
 						<input type="number" class="wall-alto" min="0" step="0.1" placeholder="0" />
 					</div>
+					<button type="button" class="wall-duplicate" data-duplicate-wall aria-label="Duplicar esta pared" title="Duplicar esta pared">⧉</button>
 					<button type="button" class="wall-remove" data-remove-wall aria-label="Quitar esta pared">✕</button>
 				</div>
 				<div class="wall-card-bottom">
@@ -1036,6 +1134,30 @@ import Base from "../layouts/Base.astro";
 				const huecoRow = huecoRowTemplate(row);
 				huecosList.appendChild(huecoRow);
 				attachHuecoListeners(huecoRow);
+				calcular();
+			});
+			const duplicateBtn = row.querySelector("[data-duplicate-wall]") as HTMLButtonElement;
+			duplicateBtn.addEventListener("click", () => {
+				const newCard = wallCardTemplate();
+				(newCard.querySelector(".wall-ancho") as HTMLInputElement).value = (row.querySelector(".wall-ancho") as HTMLInputElement).value;
+				(newCard.querySelector(".wall-alto") as HTMLInputElement).value = (row.querySelector(".wall-alto") as HTMLInputElement).value;
+				(newCard.querySelector(".wall-tipo") as HTMLSelectElement).value = (row.querySelector(".wall-tipo") as HTMLSelectElement).value;
+				(newCard.querySelector(".wall-color") as HTMLInputElement).value = (row.querySelector(".wall-color") as HTMLInputElement).value;
+				row.after(newCard);
+				attachRowListeners(newCard);
+
+				const newHuecosList = newCard.querySelector("[data-huecos-list]") as HTMLElement;
+				getHuecosDeParedRaw(row).forEach((h) => {
+					const huecoRow = huecoRowTemplate(newCard);
+					(huecoRow.querySelector(".hueco-ancho") as HTMLInputElement).value = String(h.ancho);
+					(huecoRow.querySelector(".hueco-alto") as HTMLInputElement).value = String(h.alto);
+					(huecoRow.querySelector(".hueco-antepecho") as HTMLInputElement).value = String(h.antepecho);
+					huecoRow.setAttribute("data-x", String(h.x));
+					newHuecosList.appendChild(huecoRow);
+					attachHuecoListeners(huecoRow);
+				});
+
+				refreshRemoveButtons();
 				calcular();
 			});
 		}
@@ -1348,6 +1470,7 @@ import Base from "../layouts/Base.astro";
 		});
 
 		window.addEventListener("pointerup", () => {
+			if (dragState) saveState();
 			dragState = null;
 		});
 
@@ -1376,6 +1499,7 @@ import Base from "../layouts/Base.astro";
 			if (superficieTotal <= 0) {
 				resultLitros.textContent = "—";
 				resultCans.textContent = "";
+				resultCoste.hidden = true;
 				resultTiempo.textContent = "—";
 				return;
 			}
@@ -1384,10 +1508,121 @@ import Base from "../layouts/Base.astro";
 			resultLitros.textContent = litrosRedondeados.toString().replace(".", ",");
 			resultCans.textContent = suggestCans(litrosRedondeados);
 
+			const precio = parseFloat(precioInput.value) || 0;
+			if (precio > 0) {
+				const coste = litrosRedondeados * precio;
+				resultCoste.textContent = `≈ ${coste.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+				resultCoste.hidden = false;
+			} else {
+				resultCoste.hidden = true;
+			}
+
 			const horas = (superficieTotal * manos) / velocidad;
 			resultTiempo.textContent = formatTiempo(horas);
+			saveState();
 		}
 
+		const STORAGE_KEY = "calculadora-pintura-estado-v1";
+
+		function getFullState() {
+			const rows = Array.from(wallsContainer.querySelectorAll("[data-wall-row]"));
+			const walls = rows.map((row) => ({
+				ancho: (row.querySelector(".wall-ancho") as HTMLInputElement).value,
+				alto: (row.querySelector(".wall-alto") as HTMLInputElement).value,
+				tipo: (row.querySelector(".wall-tipo") as HTMLSelectElement).value,
+				color: (row.querySelector(".wall-color") as HTMLInputElement).value,
+				huecos: getHuecosDeParedRaw(row),
+			}));
+			const muebles = getMueblesRaw();
+			return {
+				manos,
+				velocidad,
+				precio: precioInput.value,
+				walls,
+				muebles,
+			};
+		}
+
+		function saveState() {
+			try {
+				localStorage.setItem(STORAGE_KEY, JSON.stringify(getFullState()));
+			} catch (e) {
+				// almacenamiento no disponible; no pasa nada, seguimos sin guardar
+			}
+		}
+
+		function restoreState() {
+			let raw: string | null = null;
+			try {
+				raw = localStorage.getItem(STORAGE_KEY);
+			} catch (e) {
+				return;
+			}
+			if (!raw) return;
+
+			let state: any;
+			try {
+				state = JSON.parse(raw);
+			} catch (e) {
+				return;
+			}
+			if (!state || !Array.isArray(state.walls) || state.walls.length === 0) return;
+
+			wallsContainer.innerHTML = "";
+
+			state.walls.forEach((w: any) => {
+				const card = wallCardTemplate();
+				(card.querySelector(".wall-ancho") as HTMLInputElement).value = w.ancho || "";
+				(card.querySelector(".wall-alto") as HTMLInputElement).value = w.alto || "";
+				if (w.tipo) (card.querySelector(".wall-tipo") as HTMLSelectElement).value = w.tipo;
+				if (w.color) (card.querySelector(".wall-color") as HTMLInputElement).value = w.color;
+				wallsContainer.appendChild(card);
+				attachRowListeners(card);
+
+				const huecosList = card.querySelector("[data-huecos-list]") as HTMLElement;
+				(w.huecos || []).forEach((h: any) => {
+					const huecoRow = huecoRowTemplate(card);
+					(huecoRow.querySelector(".hueco-ancho") as HTMLInputElement).value = String(h.ancho ?? "0.8");
+					(huecoRow.querySelector(".hueco-alto") as HTMLInputElement).value = String(h.alto ?? "2");
+					(huecoRow.querySelector(".hueco-antepecho") as HTMLInputElement).value = String(h.antepecho ?? "0");
+					huecoRow.setAttribute("data-x", String(h.x ?? "0"));
+					if (parseFloat(h.antepecho) > 0) {
+						const tipoBtns = Array.from(huecoRow.querySelectorAll<HTMLButtonElement>("[data-hueco-tipo]"));
+						tipoBtns.forEach((b) => b.setAttribute("aria-pressed", b.dataset.huecoTipo === "ventana" ? "true" : "false"));
+					}
+					huecosList.appendChild(huecoRow);
+					attachHuecoListeners(huecoRow);
+				});
+			});
+
+			refreshRemoveButtons();
+
+			(state.muebles || []).forEach((m: any) => {
+				const muebleRow = muebleRowTemplate(0, 0);
+				(muebleRow.querySelector(".mueble-ancho") as HTMLInputElement).value = String(m.ancho ?? "1.2");
+				(muebleRow.querySelector(".mueble-alto") as HTMLInputElement).value = String(m.alto ?? "0.75");
+				muebleRow.setAttribute("data-x", String(m.x ?? "0"));
+				muebleList.appendChild(muebleRow);
+				attachMuebleListeners(muebleRow);
+			});
+
+			if (state.manos) {
+				const btn = manosBtns.find((b) => b.dataset.manos === String(state.manos));
+				if (btn) btn.click();
+			}
+			if (state.velocidad) {
+				const btn = expBtns.find((b) => b.dataset.exp === String(state.velocidad));
+				if (btn) btn.click();
+			}
+			if (state.precio) {
+				precioInput.value = state.precio;
+			}
+
+			calcular();
+		}
+
+		restoreState();
 		refreshRemoveButtons();
+		calcular();
 	</script>
 </Base>

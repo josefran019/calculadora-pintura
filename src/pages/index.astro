@@ -81,7 +81,10 @@ import Base from "../layouts/Base.astro";
 						</p>
 
 						<div class="preview-block">
-							<p class="preview-label">Vista previa (orientativa, no a escala real)</p>
+							<div class="preview-header">
+								<p class="preview-label">Vista previa (orientativa, no a escala real)</p>
+								<button type="button" class="link-btn" id="expand-preview">⤢ Ampliar</button>
+							</div>
 							<div class="preview-floor" id="preview-floor"></div>
 
 							<div class="muebles-section">
@@ -479,10 +482,17 @@ import Base from "../layouts/Base.astro";
 		.preview-block {
 			margin-top: 0.5rem;
 		}
+		.preview-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 0.6rem;
+			margin: 0 0 0.5rem;
+		}
 		.preview-label {
 			font-size: 0.78rem;
 			color: var(--color-ink-soft);
-			margin: 0 0 0.5rem;
+			margin: 0;
 		}
 		.preview-floor {
 			height: 200px;
@@ -493,6 +503,10 @@ import Base from "../layouts/Base.astro";
 			overflow: hidden;
 			display: flex;
 			flex-shrink: 0;
+			transition: height 0.25s ease;
+		}
+		.preview-floor.expanded {
+			height: min(70vh, 640px);
 		}
 		.preview-floor svg {
 			display: block;
@@ -876,6 +890,11 @@ import Base from "../layouts/Base.astro";
 		const wallsContainer = $("walls-container") as HTMLElement;
 		const addWallBtn = $("add-wall");
 		const previewFloor = $("preview-floor") as HTMLElement;
+		const expandBtn = $("expand-preview") as HTMLButtonElement;
+		expandBtn.addEventListener("click", () => {
+			const isExpanded = previewFloor.classList.toggle("expanded");
+			expandBtn.textContent = isExpanded ? "⤡ Reducir" : "⤢ Ampliar";
+		});
 		const superficieTotalValue = $("superficie-total-value");
 		const manosBtns = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-manos]"));
 		const expBtns = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-exp]"));

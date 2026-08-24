@@ -240,6 +240,45 @@ import Base from "../layouts/Base.astro";
 		</div>
 	</footer>
 
+	<script type="application/ld+json" set:html={JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "FAQPage",
+		"mainEntity": [
+			{
+				"@type": "Question",
+				"name": "¿Cuántas manos de pintura necesito?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Lo habitual son dos manos, sobre todo si cambias de color o la pared es nueva. Con una pared ya pintada de un color parecido y en buen estado, a veces basta con una."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "¿Por qué mi bote dice un rendimiento distinto?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Cada fabricante formula su pintura de forma distinta: las de gama alta suelen cubrir más por litro que las económicas. Si el envase indica un rendimiento concreto, úsalo en vez del valor orientativo de esta calculadora para un resultado más preciso."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "¿Puedo poner un tipo de superficie distinto por pared?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Sí. Cada pared tiene su propio desplegable de tipo de superficie, así que puedes mezclar, por ejemplo, una pared lisa con otra de gotelé en la misma habitación y el resultado tendrá en cuenta cada una por separado."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "¿Qué tamaño de bote me conviene comprar?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Compra siempre toda la pintura de una vez para asegurar que el tono es idéntico en todas las paredes, y redondea hacia arriba: es preferible que sobre un poco a quedarte corto a mitad de faena."
+				}
+			}
+		]
+	})} />
+
 	<style>
 		.wrap {
 			max-width: 72rem;

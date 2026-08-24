@@ -48,10 +48,6 @@ import Base from "../layouts/Base.astro";
 										<span class="wall-field-label">Alto (m)</span>
 										<input type="number" class="wall-alto" min="0" step="0.1" placeholder="0" />
 									</div>
-									<div class="wall-field wall-field-huecos">
-										<span class="wall-field-label">Huecos (m²)</span>
-										<input type="number" class="wall-huecos" min="0" step="0.1" placeholder="0" />
-									</div>
 									<button type="button" class="wall-remove" data-remove-wall aria-label="Quitar esta pared" hidden>✕</button>
 								</div>
 								<div class="wall-card-bottom">
@@ -69,6 +65,13 @@ import Base from "../layouts/Base.astro";
 										<input type="color" class="wall-color" value="#e8e4da" />
 									</div>
 								</div>
+								<div class="huecos-section">
+									<div class="huecos-header">
+										<span class="wall-field-label">Huecos en esta pared</span>
+										<button type="button" class="link-btn huecos-add" data-add-hueco>+ Añadir hueco</button>
+									</div>
+									<div class="huecos-list" data-huecos-list></div>
+								</div>
 							</div>
 						</div>
 						<button type="button" class="link-btn" id="add-wall">+ Añadir otra pared</button>
@@ -78,7 +81,13 @@ import Base from "../layouts/Base.astro";
 						</p>
 
 						<div class="preview-block">
-							<p class="preview-label">Vista previa (orientativa, no a escala real)</p>
+							<div class="preview-header">
+								<p class="preview-label">Vista previa (orientativa, no a escala real)</p>
+								<label class="preview-toggle">
+									<input type="checkbox" id="show-furniture" />
+									Mostrar sofá de referencia
+								</label>
+							</div>
 							<div class="preview-floor" id="preview-floor"></div>
 						</div>
 					</div>
@@ -425,7 +434,7 @@ import Base from "../layouts/Base.astro";
 		}
 		.wall-card-top {
 			display: grid;
-			grid-template-columns: 1fr auto 1fr 1fr auto;
+			grid-template-columns: 1fr auto 1fr auto;
 			align-items: end;
 			gap: 0.5rem;
 		}
@@ -468,53 +477,52 @@ import Base from "../layouts/Base.astro";
 		.preview-block {
 			margin-top: 0.5rem;
 		}
+		.preview-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 0.6rem;
+			flex-wrap: wrap;
+			margin: 0 0 0.5rem;
+		}
 		.preview-label {
 			font-size: 0.78rem;
 			color: var(--color-ink-soft);
-			margin: 0 0 0.5rem;
+			margin: 0;
+		}
+		.preview-toggle {
+			display: flex;
+			align-items: center;
+			gap: 0.4rem;
+			font-size: 0.78rem;
+			color: var(--color-ink-soft);
+			font-weight: 500;
+			cursor: pointer;
+		}
+		.preview-toggle input {
+			cursor: pointer;
 		}
 		.preview-floor {
-			display: flex;
-			align-items: flex-end;
-			gap: 3px;
-			height: 140px;
-			background: repeating-linear-gradient(
-				45deg,
-				#f6f4ee,
-				#f6f4ee 10px,
-				#efece2 10px,
-				#efece2 20px
-			);
+			height: 200px;
+			background: #f6f4ee;
 			border: 1px solid var(--color-line);
-			border-bottom: 6px solid var(--color-ink-soft);
-			border-radius: 8px 8px 2px 2px;
-			padding: 0 3px;
+			border-radius: 8px;
 			overflow: hidden;
-		}
-		.preview-wall {
-			position: relative;
-			min-width: 24px;
-			border-radius: 2px 2px 0 0;
-			box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 			display: flex;
-			align-items: flex-end;
-			justify-content: center;
 		}
-		.preview-wall-label {
-			font-family: var(--font-mono);
-			font-size: 0.62rem;
-			color: rgba(0, 0, 0, 0.55);
-			background: rgba(255, 255, 255, 0.55);
-			padding: 1px 4px;
-			border-radius: 4px;
-			margin-bottom: 4px;
-			white-space: nowrap;
+		.preview-floor svg {
+			width: 100%;
+			height: 100%;
 		}
 		.preview-empty {
 			margin: auto;
 			font-size: 0.85rem;
 			color: var(--color-ink-soft);
 			padding: 0 1rem;
+		}
+		:global(.hueco-rect) {
+			cursor: ew-resize;
+			touch-action: none;
 		}
 		.wall-times {
 			color: var(--color-ink-soft);
@@ -737,15 +745,67 @@ import Base from "../layouts/Base.astro";
 
 		@media (max-width: 560px) {
 			.wall-card-top {
-				grid-template-columns: 1fr auto 1fr;
+				grid-template-columns: 1fr auto 1fr auto;
 			}
-			.wall-field-huecos {
-				grid-column: 1 / -1;
+			.huecos-list {
+				grid-template-columns: 1fr;
 			}
-			.wall-remove {
-				grid-column: 3;
-				justify-self: end;
-			}
+		}
+
+		.huecos-section {
+			border-top: 1px dashed var(--color-line);
+			padding-top: 0.6rem;
+			margin-top: 0.2rem;
+		}
+		.huecos-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 0.5rem;
+			margin-bottom: 0.5rem;
+		}
+		.huecos-add {
+			font-size: 0.78rem;
+		}
+		.huecos-list {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 0.4rem;
+		}
+		.huecos-list:empty {
+			display: none;
+		}
+		.hueco-row {
+			display: grid;
+			grid-template-columns: 1fr 1fr auto;
+			align-items: end;
+			gap: 0.35rem;
+			background: var(--color-bg-panel);
+			border: 1px solid var(--color-line);
+			border-radius: 8px;
+			padding: 0.4rem;
+		}
+		.hueco-row .wall-field-label {
+			font-size: 0.66rem;
+		}
+		.hueco-row input {
+			width: 100%;
+			font-family: var(--font-mono);
+			font-size: 0.85rem;
+			padding: 0.35rem 0.4rem;
+			border: 1px solid var(--color-line);
+			border-radius: 6px;
+			background: #fff;
+		}
+		.hueco-remove {
+			background: #fff;
+			border: 1.5px solid var(--color-line);
+			border-radius: 6px;
+			width: 1.8rem;
+			height: 1.8rem;
+			cursor: pointer;
+			color: var(--color-oxide-ink);
+			font-size: 0.72rem;
 		}
 	</style>
 
@@ -754,6 +814,7 @@ import Base from "../layouts/Base.astro";
 
 		const wallsContainer = $("walls-container") as HTMLElement;
 		const addWallBtn = $("add-wall");
+		const previewFloor = $("preview-floor") as HTMLElement;
 		const superficieTotalValue = $("superficie-total-value");
 		const manosBtns = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-manos]"));
 		const expBtns = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-exp]"));
@@ -779,10 +840,6 @@ import Base from "../layouts/Base.astro";
 						<span class="wall-field-label">Alto (m)</span>
 						<input type="number" class="wall-alto" min="0" step="0.1" placeholder="0" />
 					</div>
-					<div class="wall-field wall-field-huecos">
-						<span class="wall-field-label">Huecos (m²)</span>
-						<input type="number" class="wall-huecos" min="0" step="0.1" placeholder="0" />
-					</div>
 					<button type="button" class="wall-remove" data-remove-wall aria-label="Quitar esta pared">✕</button>
 				</div>
 				<div class="wall-card-bottom">
@@ -800,8 +857,52 @@ import Base from "../layouts/Base.astro";
 						<input type="color" class="wall-color" value="#e8e4da" />
 					</div>
 				</div>
+				<div class="huecos-section">
+					<div class="huecos-header">
+						<span class="wall-field-label">Huecos en esta pared</span>
+						<button type="button" class="link-btn huecos-add" data-add-hueco>+ Añadir hueco</button>
+					</div>
+					<div class="huecos-list" data-huecos-list></div>
+				</div>
 			`;
 			return card;
+		}
+
+		let huecoIdCounter = 1;
+
+		function huecoRowTemplate(wallRow: HTMLElement): HTMLElement {
+			const wallAncho = parseFloat((wallRow.querySelector(".wall-ancho") as HTMLInputElement).value) || 0;
+			const defaultAncho = 0.8;
+			const defaultX = Math.max((wallAncho - defaultAncho) / 2, 0);
+			const id = `h${huecoIdCounter++}`;
+
+			const row = document.createElement("div");
+			row.className = "hueco-row";
+			row.setAttribute("data-hueco", "");
+			row.setAttribute("data-id", id);
+			row.setAttribute("data-x", defaultX.toFixed(2));
+			row.innerHTML = `
+				<div class="wall-field">
+					<span class="wall-field-label">Ancho (m)</span>
+					<input type="number" class="hueco-ancho" min="0" step="0.1" value="${defaultAncho}" />
+				</div>
+				<div class="wall-field">
+					<span class="wall-field-label">Alto (m)</span>
+					<input type="number" class="hueco-alto" min="0" step="0.1" value="2" />
+				</div>
+				<button type="button" class="hueco-remove" data-remove-hueco aria-label="Quitar este hueco">✕</button>
+			`;
+			return row;
+		}
+
+		function attachHuecoListeners(huecoRow: HTMLElement) {
+			const inputs = huecoRow.querySelectorAll("input");
+			inputs.forEach((el) => el.addEventListener("input", calcular));
+			const removeBtn = huecoRow.querySelector("[data-remove-hueco]") as HTMLButtonElement;
+			removeBtn.addEventListener("click", () => {
+				huecoRow.remove();
+				calcular();
+			});
 		}
 
 		function refreshRemoveButtons() {
@@ -813,12 +914,20 @@ import Base from "../layouts/Base.astro";
 		}
 
 		function attachRowListeners(row: HTMLElement) {
-			const inputs = row.querySelectorAll("input, select");
+			const inputs = row.querySelectorAll(".wall-ancho, .wall-alto, .wall-tipo, .wall-color");
 			inputs.forEach((el) => el.addEventListener("input", calcular));
 			const removeBtn = row.querySelector("[data-remove-wall]") as HTMLButtonElement;
 			removeBtn.addEventListener("click", () => {
 				row.remove();
 				refreshRemoveButtons();
+				calcular();
+			});
+			const addHuecoBtn = row.querySelector("[data-add-hueco]") as HTMLButtonElement;
+			const huecosList = row.querySelector("[data-huecos-list]") as HTMLElement;
+			addHuecoBtn.addEventListener("click", () => {
+				const huecoRow = huecoRowTemplate(row);
+				huecosList.appendChild(huecoRow);
+				attachHuecoListeners(huecoRow);
 				calcular();
 			});
 		}
@@ -880,14 +989,38 @@ import Base from "../layouts/Base.astro";
 			return min > 0 ? `${h} h ${min} min` : `${h} h`;
 		}
 
+		const showFurniture = $("show-furniture") as HTMLInputElement;
+		showFurniture.addEventListener("change", () => {
+			const rows = Array.from(wallsContainer.querySelectorAll("[data-wall-row]"));
+			renderPreview(rows);
+		});
+
+		function textureIdFor(rendimiento: number): string | null {
+			if (rendimiento === 7) return "tex-gotele";
+			if (rendimiento === 14) return "tex-madera";
+			return null;
+		}
+
+		function getHuecosDeParedRaw(wallRow: Element) {
+			return Array.from(wallRow.querySelectorAll("[data-hueco]")).map((h) => {
+				const el = h as HTMLElement;
+				const ancho = parseFloat((el.querySelector(".hueco-ancho") as HTMLInputElement).value) || 0;
+				const alto = parseFloat((el.querySelector(".hueco-alto") as HTMLInputElement).value) || 0;
+				const id = el.getAttribute("data-id") || "";
+				const x = parseFloat(el.getAttribute("data-x") || "0") || 0;
+				return { id, ancho, alto, x };
+			});
+		}
+
 		function renderPreview(rows: Element[]) {
-			const previewFloor = $("preview-floor") as HTMLElement;
 			const wallsData = rows
 				.map((row) => {
 					const ancho = parseFloat((row.querySelector(".wall-ancho") as HTMLInputElement).value) || 0;
 					const alto = parseFloat((row.querySelector(".wall-alto") as HTMLInputElement).value) || 0;
 					const color = (row.querySelector(".wall-color") as HTMLInputElement).value || "#e8e4da";
-					return { ancho, alto, color };
+					const rendimiento = parseFloat((row.querySelector(".wall-tipo") as HTMLSelectElement).value) || 10;
+					const huecos = getHuecosDeParedRaw(row).filter((h) => h.ancho > 0 && h.alto > 0);
+					return { ancho, alto, color, textureId: textureIdFor(rendimiento), huecos };
 				})
 				.filter((w) => w.ancho > 0 && w.alto > 0);
 
@@ -898,15 +1031,125 @@ import Base from "../layouts/Base.astro";
 
 			const maxAlto = Math.max(...wallsData.map((w) => w.alto));
 			const totalAncho = wallsData.reduce((sum, w) => sum + w.ancho, 0);
+			const floorMargin = maxAlto * 0.04;
+			const viewW = totalAncho;
+			const viewH = maxAlto + floorMargin;
 
-			previewFloor.innerHTML = wallsData
+			let cursorX = 0;
+			const wallRects = wallsData
 				.map((w) => {
-					const widthPct = (w.ancho / totalAncho) * 100;
-					const heightPct = (w.alto / maxAlto) * 100;
-					return `<div class="preview-wall" style="width:${widthPct}%;height:${heightPct}%;background:${w.color}"><span class="preview-wall-label">${w.ancho}×${w.alto} m</span></div>`;
+					const x = cursorX;
+					const y = viewH - w.alto - floorMargin;
+					cursorX += w.ancho;
+					const patternFill = w.textureId ? `url(#${w.textureId})` : "none";
+
+					const huecosSvg = w.huecos
+						.map((h) => {
+							const hx = Math.min(Math.max(h.x, 0), Math.max(w.ancho - h.ancho, 0));
+							const hAltoClamped = Math.min(h.alto, w.alto);
+							const hxAbs = x + hx;
+							const hyAbs = y + w.alto - hAltoClamped;
+							return `<rect class="hueco-rect" data-hueco-id="${h.id}" x="${hxAbs}" y="${hyAbs}" width="${h.ancho}" height="${hAltoClamped}" fill="#f6f4ee" stroke="rgba(0,0,0,0.4)" stroke-dasharray="${viewH * 0.012} ${viewH * 0.008}" stroke-width="${viewH * 0.004}" />`;
+						})
+						.join("");
+
+					return `
+						<rect x="${x}" y="${y}" width="${w.ancho}" height="${w.alto}" fill="${w.color}" stroke="rgba(0,0,0,0.12)" stroke-width="${viewH * 0.004}" />
+						${w.textureId ? `<rect x="${x}" y="${y}" width="${w.ancho}" height="${w.alto}" fill="${patternFill}" />` : ""}
+						${huecosSvg}
+						<text x="${x + w.ancho / 2}" y="${y + viewH * 0.045}" font-size="${viewH * 0.045}" text-anchor="middle" fill="rgba(0,0,0,0.55)" font-family="IBM Plex Mono, monospace">${w.ancho}×${w.alto} m</text>
+					`;
 				})
 				.join("");
+
+			const furnitureOn = showFurniture.checked;
+			const couchW = 1.8;
+			const couchH = 0.75;
+			let furnitureSvg = "";
+			if (furnitureOn && totalAncho >= couchW + 0.4) {
+				const fx = totalAncho * 0.06;
+				const fy = viewH - floorMargin - couchH;
+				furnitureSvg = `
+					<g transform="translate(${fx}, ${fy})" fill="#3a3730" fill-opacity="0.82">
+						<rect x="0" y="${couchH * 0.32}" width="${couchW}" height="${couchH * 0.68}" rx="${couchH * 0.08}" />
+						<rect x="0" y="0" width="${couchW * 0.14}" height="${couchH}" rx="${couchH * 0.08}" />
+						<rect x="${couchW - couchW * 0.14}" y="0" width="${couchW * 0.14}" height="${couchH}" rx="${couchH * 0.08}" />
+						<rect x="0" y="0" width="${couchW}" height="${couchH * 0.42}" rx="${couchH * 0.08}" fill-opacity="0.55" />
+					</g>
+					<text x="${fx + couchW / 2}" y="${fy - viewH * 0.015}" font-size="${viewH * 0.038}" text-anchor="middle" fill="rgba(0,0,0,0.45)" font-family="IBM Plex Mono, monospace">sofá 1,8 m (ref.)</text>
+				`;
+			}
+
+			previewFloor.innerHTML = `
+				<svg viewBox="0 0 ${viewW} ${viewH}" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Vista previa de las paredes con el color elegido">
+					<defs>
+						<pattern id="tex-gotele" patternUnits="userSpaceOnUse" width="${viewH * 0.045}" height="${viewH * 0.045}">
+							<circle cx="${viewH * 0.011}" cy="${viewH * 0.011}" r="${viewH * 0.008}" fill="#000" fill-opacity="0.16" />
+							<circle cx="${viewH * 0.033}" cy="${viewH * 0.028}" r="${viewH * 0.006}" fill="#000" fill-opacity="0.13" />
+							<circle cx="${viewH * 0.02}" cy="${viewH * 0.038}" r="${viewH * 0.007}" fill="#000" fill-opacity="0.14" />
+						</pattern>
+						<pattern id="tex-madera" patternUnits="userSpaceOnUse" width="${viewH * 0.09}" height="${viewH * 0.03}">
+							<rect width="${viewH * 0.09}" height="${viewH * 0.03}" fill="none" />
+							<line x1="0" y1="${viewH * 0.008}" x2="${viewH * 0.09}" y2="${viewH * 0.006}" stroke="#000" stroke-opacity="0.13" stroke-width="${viewH * 0.003}" />
+							<line x1="0" y1="${viewH * 0.02}" x2="${viewH * 0.09}" y2="${viewH * 0.022}" stroke="#000" stroke-opacity="0.1" stroke-width="${viewH * 0.002}" />
+						</pattern>
+					</defs>
+					<rect x="0" y="${viewH - floorMargin}" width="${viewW}" height="${floorMargin}" fill="#8b8578" />
+					${wallRects}
+					${furnitureSvg}
+				</svg>
+			`;
 		}
+
+		type DragState = {
+			huecoId: string;
+			wallAncho: number;
+			huecoAncho: number;
+			startX: number;
+			startClientX: number;
+			ratio: number;
+		};
+		let dragState: DragState | null = null;
+
+		previewFloor.addEventListener("pointerdown", (e: PointerEvent) => {
+			const target = e.target as SVGElement;
+			if (!target.classList || !target.classList.contains("hueco-rect")) return;
+			const huecoId = target.getAttribute("data-hueco-id");
+			if (!huecoId) return;
+			const huecoRow = document.querySelector(`[data-hueco][data-id="${huecoId}"]`) as HTMLElement;
+			if (!huecoRow) return;
+			const wallRow = huecoRow.closest("[data-wall-row]") as HTMLElement;
+			const wallAncho = parseFloat((wallRow.querySelector(".wall-ancho") as HTMLInputElement).value) || 0;
+			const huecoAncho = parseFloat((huecoRow.querySelector(".hueco-ancho") as HTMLInputElement).value) || 0;
+			const svg = target.ownerSVGElement;
+			if (!svg) return;
+			const svgRect = svg.getBoundingClientRect();
+			const viewBoxW = svg.viewBox.baseVal.width;
+			const ratio = viewBoxW / svgRect.width;
+			dragState = {
+				huecoId,
+				wallAncho,
+				huecoAncho,
+				startX: parseFloat(huecoRow.getAttribute("data-x") || "0") || 0,
+				startClientX: e.clientX,
+				ratio,
+			};
+			(e.target as Element).setPointerCapture?.(e.pointerId);
+		});
+
+		window.addEventListener("pointermove", (e: PointerEvent) => {
+			if (!dragState) return;
+			const deltaMeters = (e.clientX - dragState.startClientX) * dragState.ratio;
+			const newX = Math.min(Math.max(dragState.startX + deltaMeters, 0), Math.max(dragState.wallAncho - dragState.huecoAncho, 0));
+			const huecoRow = document.querySelector(`[data-hueco][data-id="${dragState.huecoId}"]`) as HTMLElement;
+			if (huecoRow) huecoRow.setAttribute("data-x", newX.toFixed(2));
+			const rows = Array.from(wallsContainer.querySelectorAll("[data-wall-row]"));
+			renderPreview(rows);
+		});
+
+		window.addEventListener("pointerup", () => {
+			dragState = null;
+		});
 
 		function calcular() {
 			const rows = Array.from(wallsContainer.querySelectorAll("[data-wall-row]"));
@@ -916,10 +1159,10 @@ import Base from "../layouts/Base.astro";
 			rows.forEach((row) => {
 				const ancho = parseFloat((row.querySelector(".wall-ancho") as HTMLInputElement).value) || 0;
 				const alto = parseFloat((row.querySelector(".wall-alto") as HTMLInputElement).value) || 0;
-				const huecos = parseFloat((row.querySelector(".wall-huecos") as HTMLInputElement).value) || 0;
 				const rendimiento = parseFloat((row.querySelector(".wall-tipo") as HTMLSelectElement).value) || 10;
+				const huecosArea = getHuecosDeParedRaw(row).reduce((sum, h) => sum + Math.max(h.ancho, 0) * Math.max(h.alto, 0), 0);
 
-				const area = Math.max(ancho * alto - huecos, 0);
+				const area = Math.max(ancho * alto - huecosArea, 0);
 				superficieTotal += area;
 
 				if (area > 0) {

@@ -81,14 +81,16 @@ import Base from "../layouts/Base.astro";
 						</p>
 
 						<div class="preview-block">
-							<div class="preview-header">
-								<p class="preview-label">Vista previa (orientativa, no a escala real)</p>
-								<label class="preview-toggle">
-									<input type="checkbox" id="show-furniture" />
-									Mostrar sofá de referencia
-								</label>
-							</div>
+							<p class="preview-label">Vista previa (orientativa, no a escala real)</p>
 							<div class="preview-floor" id="preview-floor"></div>
+
+							<div class="muebles-section">
+								<div class="huecos-header">
+									<span class="wall-field-label">Muebles de referencia (opcional)</span>
+									<button type="button" class="link-btn" id="add-mueble">+ Añadir mueble</button>
+								</div>
+								<div class="muebles-list" id="muebles-list"></div>
+							</div>
 						</div>
 					</div>
 
@@ -477,40 +479,23 @@ import Base from "../layouts/Base.astro";
 		.preview-block {
 			margin-top: 0.5rem;
 		}
-		.preview-header {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			gap: 0.6rem;
-			flex-wrap: wrap;
-			margin: 0 0 0.5rem;
-		}
 		.preview-label {
 			font-size: 0.78rem;
 			color: var(--color-ink-soft);
-			margin: 0;
-		}
-		.preview-toggle {
-			display: flex;
-			align-items: center;
-			gap: 0.4rem;
-			font-size: 0.78rem;
-			color: var(--color-ink-soft);
-			font-weight: 500;
-			cursor: pointer;
-		}
-		.preview-toggle input {
-			cursor: pointer;
+			margin: 0 0 0.5rem;
 		}
 		.preview-floor {
 			height: 200px;
+			width: 100%;
 			background: #f6f4ee;
 			border: 1px solid var(--color-line);
 			border-radius: 8px;
 			overflow: hidden;
 			display: flex;
+			flex-shrink: 0;
 		}
 		.preview-floor svg {
+			display: block;
 			width: 100%;
 			height: 100%;
 		}
@@ -523,6 +508,54 @@ import Base from "../layouts/Base.astro";
 		:global(.hueco-rect) {
 			cursor: ew-resize;
 			touch-action: none;
+		}
+		:global(.mueble-rect) {
+			cursor: grab;
+			touch-action: none;
+		}
+		.muebles-section {
+			margin-top: 0.6rem;
+		}
+		.muebles-list {
+			display: flex;
+			flex-direction: column;
+			gap: 0.4rem;
+			margin-top: 0.4rem;
+		}
+		.muebles-list:empty {
+			margin-top: 0;
+		}
+		.mueble-row {
+			display: grid;
+			grid-template-columns: 1fr 1fr auto;
+			align-items: end;
+			gap: 0.35rem;
+			background: var(--color-bg-panel);
+			border: 1px solid var(--color-line);
+			border-radius: 8px;
+			padding: 0.4rem;
+		}
+		.mueble-row .wall-field-label {
+			font-size: 0.66rem;
+		}
+		.mueble-row input {
+			width: 100%;
+			font-family: var(--font-mono);
+			font-size: 0.85rem;
+			padding: 0.35rem 0.4rem;
+			border: 1px solid var(--color-line);
+			border-radius: 6px;
+			background: #fff;
+		}
+		.mueble-remove {
+			background: #fff;
+			border: 1.5px solid var(--color-line);
+			border-radius: 6px;
+			width: 1.8rem;
+			height: 1.8rem;
+			cursor: pointer;
+			color: var(--color-oxide-ink);
+			font-size: 0.72rem;
 		}
 		.wall-times {
 			color: var(--color-ink-soft);
@@ -1045,11 +1078,66 @@ import Base from "../layouts/Base.astro";
 			return min > 0 ? `${h} h ${min} min` : `${h} h`;
 		}
 
-		const showFurniture = $("show-furniture") as HTMLInputElement;
-		showFurniture.addEventListener("change", () => {
+		let muebleIdCounter = 1;
+
+		function muebleRowTemplate(currentTotalAncho: number, existingCount: number): HTMLElement {
+			const defaultAncho = 1.2;
+			const defaultAlto = 0.75;
+			const spacing = defaultAncho + 0.3;
+			const defaultX = Math.min(existingCount * spacing, Math.max(currentTotalAncho - defaultAncho, 0));
+			const id = `m${muebleIdCounter++}`;
+
+			const row = document.createElement("div");
+			row.className = "mueble-row";
+			row.setAttribute("data-mueble", "");
+			row.setAttribute("data-id", id);
+			row.setAttribute("data-x", defaultX.toFixed(2));
+			row.innerHTML = `
+				<div class="wall-field">
+					<span class="wall-field-label">Ancho (m)</span>
+					<input type="number" class="mueble-ancho" min="0" step="0.1" value="${defaultAncho}" />
+				</div>
+				<div class="wall-field">
+					<span class="wall-field-label">Alto (m)</span>
+					<input type="number" class="mueble-alto" min="0" step="0.1" value="${defaultAlto}" />
+				</div>
+				<button type="button" class="mueble-remove" data-remove-mueble aria-label="Quitar este mueble">✕</button>
+			`;
+			return row;
+		}
+
+		function attachMuebleListeners(muebleRow: HTMLElement) {
+			const inputs = muebleRow.querySelectorAll("input");
+			inputs.forEach((el) => el.addEventListener("input", calcular));
+			const removeBtn = muebleRow.querySelector("[data-remove-mueble]") as HTMLButtonElement;
+			removeBtn.addEventListener("click", () => {
+				muebleRow.remove();
+				calcular();
+			});
+		}
+
+		const muebleList = $("muebles-list") as HTMLElement;
+		const addMuebleBtn = $("add-mueble");
+		addMuebleBtn.addEventListener("click", () => {
 			const rows = Array.from(wallsContainer.querySelectorAll("[data-wall-row]"));
-			renderPreview(rows);
+			const currentTotalAncho = rows.reduce((sum, row) => sum + (parseFloat((row.querySelector(".wall-ancho") as HTMLInputElement).value) || 0), 0);
+			const existingCount = muebleList.querySelectorAll("[data-mueble]").length;
+			const muebleRow = muebleRowTemplate(currentTotalAncho, existingCount);
+			muebleList.appendChild(muebleRow);
+			attachMuebleListeners(muebleRow);
+			calcular();
 		});
+
+		function getMueblesRaw() {
+			return Array.from(muebleList.querySelectorAll("[data-mueble]")).map((m) => {
+				const el = m as HTMLElement;
+				const ancho = parseFloat((el.querySelector(".mueble-ancho") as HTMLInputElement).value) || 0;
+				const alto = parseFloat((el.querySelector(".mueble-alto") as HTMLInputElement).value) || 0;
+				const id = el.getAttribute("data-id") || "";
+				const x = parseFloat(el.getAttribute("data-x") || "0") || 0;
+				return { id, ancho, alto, x };
+			});
+		}
 
 		function textureIdFor(rendimiento: number): string | null {
 			if (rendimiento === 7) return "tex-gotele";
@@ -1120,26 +1208,21 @@ import Base from "../layouts/Base.astro";
 				})
 				.join("");
 
-			const furnitureOn = showFurniture.checked;
-			const couchW = 1.8;
-			const couchH = 0.75;
-			let furnitureSvg = "";
-			if (furnitureOn && totalAncho >= couchW + 0.4) {
-				const fx = totalAncho * 0.06;
-				const fy = viewH - floorMargin - couchH;
-				furnitureSvg = `
-					<g transform="translate(${fx}, ${fy})" fill="#3a3730" fill-opacity="0.82">
-						<rect x="0" y="${couchH * 0.32}" width="${couchW}" height="${couchH * 0.68}" rx="${couchH * 0.08}" />
-						<rect x="0" y="0" width="${couchW * 0.14}" height="${couchH}" rx="${couchH * 0.08}" />
-						<rect x="${couchW - couchW * 0.14}" y="0" width="${couchW * 0.14}" height="${couchH}" rx="${couchH * 0.08}" />
-						<rect x="0" y="0" width="${couchW}" height="${couchH * 0.42}" rx="${couchH * 0.08}" fill-opacity="0.55" />
-					</g>
-					<text x="${fx + couchW / 2}" y="${fy - viewH * 0.015}" font-size="${viewH * 0.038}" text-anchor="middle" fill="rgba(0,0,0,0.45)" font-family="IBM Plex Mono, monospace">sofá 1,8 m (ref.)</text>
-				`;
-			}
+			const mueblesData = getMueblesRaw().filter((m) => m.ancho > 0 && m.alto > 0);
+			const mueblesSvg = mueblesData
+				.map((m) => {
+					const mAltoClamped = Math.min(m.alto, viewH - floorMargin);
+					const mx = Math.min(Math.max(m.x, 0), Math.max(totalAncho - m.ancho, 0));
+					const my = viewH - floorMargin - mAltoClamped;
+					return `
+						<rect class="mueble-rect" data-mueble-id="${m.id}" x="${mx}" y="${my}" width="${m.ancho}" height="${mAltoClamped}" rx="${viewH * 0.01}" fill="#3a3730" fill-opacity="0.78" stroke="rgba(0,0,0,0.2)" stroke-width="${viewH * 0.003}" />
+						<text x="${mx + m.ancho / 2}" y="${my - viewH * 0.012}" font-size="${viewH * 0.032}" text-anchor="middle" fill="rgba(0,0,0,0.45)" font-family="IBM Plex Mono, monospace" pointer-events="none">${m.ancho}×${m.alto} m</text>
+					`;
+				})
+				.join("");
 
 			previewFloor.innerHTML = `
-				<svg viewBox="0 0 ${viewW} ${viewH}" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Vista previa de las paredes con el color elegido">
+				<svg viewBox="0 0 ${viewW} ${viewH}" width="100%" height="100%" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Vista previa de las paredes con el color elegido">
 					<defs>
 						<pattern id="tex-gotele" patternUnits="userSpaceOnUse" width="${viewH * 0.045}" height="${viewH * 0.045}">
 							<circle cx="${viewH * 0.011}" cy="${viewH * 0.011}" r="${viewH * 0.008}" fill="#000" fill-opacity="0.16" />
@@ -1154,15 +1237,16 @@ import Base from "../layouts/Base.astro";
 					</defs>
 					<rect x="0" y="${viewH - floorMargin}" width="${viewW}" height="${floorMargin}" fill="#8b8578" />
 					${wallRects}
-					${furnitureSvg}
+					${mueblesSvg}
 				</svg>
 			`;
 		}
 
 		type DragState = {
-			huecoId: string;
-			wallAncho: number;
-			huecoAncho: number;
+			kind: "hueco" | "mueble";
+			id: string;
+			itemAncho: number;
+			maxX: number;
 			startX: number;
 			startClientX: number;
 			ratio: number;
@@ -1171,36 +1255,60 @@ import Base from "../layouts/Base.astro";
 
 		previewFloor.addEventListener("pointerdown", (e: PointerEvent) => {
 			const target = e.target as SVGElement;
-			if (!target.classList || !target.classList.contains("hueco-rect")) return;
-			const huecoId = target.getAttribute("data-hueco-id");
-			if (!huecoId) return;
-			const huecoRow = document.querySelector(`[data-hueco][data-id="${huecoId}"]`) as HTMLElement;
-			if (!huecoRow) return;
-			const wallRow = huecoRow.closest("[data-wall-row]") as HTMLElement;
-			const wallAncho = parseFloat((wallRow.querySelector(".wall-ancho") as HTMLInputElement).value) || 0;
-			const huecoAncho = parseFloat((huecoRow.querySelector(".hueco-ancho") as HTMLInputElement).value) || 0;
+			if (!target.classList) return;
+
 			const svg = target.ownerSVGElement;
 			if (!svg) return;
 			const svgRect = svg.getBoundingClientRect();
 			const viewBoxW = svg.viewBox.baseVal.width;
 			const ratio = viewBoxW / svgRect.width;
-			dragState = {
-				huecoId,
-				wallAncho,
-				huecoAncho,
-				startX: parseFloat(huecoRow.getAttribute("data-x") || "0") || 0,
-				startClientX: e.clientX,
-				ratio,
-			};
-			(e.target as Element).setPointerCapture?.(e.pointerId);
+
+			if (target.classList.contains("hueco-rect")) {
+				const huecoId = target.getAttribute("data-hueco-id");
+				if (!huecoId) return;
+				const huecoRow = document.querySelector(`[data-hueco][data-id="${huecoId}"]`) as HTMLElement;
+				if (!huecoRow) return;
+				const wallRow = huecoRow.closest("[data-wall-row]") as HTMLElement;
+				const wallAncho = parseFloat((wallRow.querySelector(".wall-ancho") as HTMLInputElement).value) || 0;
+				const huecoAncho = parseFloat((huecoRow.querySelector(".hueco-ancho") as HTMLInputElement).value) || 0;
+				dragState = {
+					kind: "hueco",
+					id: huecoId,
+					itemAncho: huecoAncho,
+					maxX: Math.max(wallAncho - huecoAncho, 0),
+					startX: parseFloat(huecoRow.getAttribute("data-x") || "0") || 0,
+					startClientX: e.clientX,
+					ratio,
+				};
+				(e.target as Element).setPointerCapture?.(e.pointerId);
+			} else if (target.classList.contains("mueble-rect")) {
+				const muebleId = target.getAttribute("data-mueble-id");
+				if (!muebleId) return;
+				const muebleRow = document.querySelector(`[data-mueble][data-id="${muebleId}"]`) as HTMLElement;
+				if (!muebleRow) return;
+				const muebleAncho = parseFloat((muebleRow.querySelector(".mueble-ancho") as HTMLInputElement).value) || 0;
+				const rows = Array.from(wallsContainer.querySelectorAll("[data-wall-row]"));
+				const totalAncho = rows.reduce((sum, row) => sum + (parseFloat((row.querySelector(".wall-ancho") as HTMLInputElement).value) || 0), 0);
+				dragState = {
+					kind: "mueble",
+					id: muebleId,
+					itemAncho: muebleAncho,
+					maxX: Math.max(totalAncho - muebleAncho, 0),
+					startX: parseFloat(muebleRow.getAttribute("data-x") || "0") || 0,
+					startClientX: e.clientX,
+					ratio,
+				};
+				(e.target as Element).setPointerCapture?.(e.pointerId);
+			}
 		});
 
 		window.addEventListener("pointermove", (e: PointerEvent) => {
 			if (!dragState) return;
 			const deltaMeters = (e.clientX - dragState.startClientX) * dragState.ratio;
-			const newX = Math.min(Math.max(dragState.startX + deltaMeters, 0), Math.max(dragState.wallAncho - dragState.huecoAncho, 0));
-			const huecoRow = document.querySelector(`[data-hueco][data-id="${dragState.huecoId}"]`) as HTMLElement;
-			if (huecoRow) huecoRow.setAttribute("data-x", newX.toFixed(2));
+			const newX = Math.min(Math.max(dragState.startX + deltaMeters, 0), dragState.maxX);
+			const selector = dragState.kind === "hueco" ? `[data-hueco][data-id="${dragState.id}"]` : `[data-mueble][data-id="${dragState.id}"]`;
+			const row = document.querySelector(selector) as HTMLElement;
+			if (row) row.setAttribute("data-x", newX.toFixed(2));
 			const rows = Array.from(wallsContainer.querySelectorAll("[data-wall-row]"));
 			renderPreview(rows);
 		});

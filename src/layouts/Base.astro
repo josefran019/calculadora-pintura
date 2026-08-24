@@ -31,6 +31,14 @@ const { title, description } = Astro.props;
 			href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700&display=swap"
 			rel="stylesheet"
 		/>
+
+		<!-- Cloudflare Web Analytics -->
+		<script
+			type="module"
+			src="https://static.cloudflareinsights.com/beacon.min.js"
+			data-cf-beacon='{"token": "195b24d64be849a08f5d1d6e999e682d"}'
+		></script>
+		<!-- End Cloudflare Web Analytics -->
 	</head>
 	<body>
 		<slot />

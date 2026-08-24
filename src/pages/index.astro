@@ -747,8 +747,12 @@ import Base from "../layouts/Base.astro";
 			.wall-card-top {
 				grid-template-columns: 1fr auto 1fr auto;
 			}
-			.huecos-list {
-				grid-template-columns: 1fr;
+			.hueco-inputs {
+				grid-template-columns: 1fr 1fr;
+			}
+			.hueco-remove {
+				grid-column: 2;
+				justify-self: end;
 			}
 		}
 
@@ -768,31 +772,55 @@ import Base from "../layouts/Base.astro";
 			font-size: 0.78rem;
 		}
 		.huecos-list {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			gap: 0.4rem;
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
 		}
 		.huecos-list:empty {
 			display: none;
 		}
 		.hueco-row {
-			display: grid;
-			grid-template-columns: 1fr 1fr auto;
-			align-items: end;
-			gap: 0.35rem;
 			background: var(--color-bg-panel);
 			border: 1px solid var(--color-line);
 			border-radius: 8px;
-			padding: 0.4rem;
+			padding: 0.5rem;
+			display: flex;
+			flex-direction: column;
+			gap: 0.45rem;
+		}
+		.hueco-tipo-toggle {
+			display: flex;
+			gap: 0.4rem;
+		}
+		.hueco-tipo-btn {
+			flex: 1;
+			background: #fff;
+			border: 1.5px solid var(--color-line);
+			border-radius: 6px;
+			padding: 0.3rem;
+			font-size: 0.75rem;
+			font-weight: 600;
+			cursor: pointer;
+		}
+		.hueco-tipo-btn[aria-pressed="true"] {
+			border-color: var(--color-ink);
+			background: var(--color-ink);
+			color: var(--color-bg-panel);
+		}
+		.hueco-inputs {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr auto;
+			align-items: end;
+			gap: 0.35rem;
 		}
 		.hueco-row .wall-field-label {
-			font-size: 0.66rem;
+			font-size: 0.62rem;
 		}
 		.hueco-row input {
 			width: 100%;
 			font-family: var(--font-mono);
-			font-size: 0.85rem;
-			padding: 0.35rem 0.4rem;
+			font-size: 0.82rem;
+			padding: 0.35rem 0.35rem;
 			border: 1px solid var(--color-line);
 			border-radius: 6px;
 			background: #fff;
@@ -882,15 +910,25 @@ import Base from "../layouts/Base.astro";
 			row.setAttribute("data-id", id);
 			row.setAttribute("data-x", defaultX.toFixed(2));
 			row.innerHTML = `
-				<div class="wall-field">
-					<span class="wall-field-label">Ancho (m)</span>
-					<input type="number" class="hueco-ancho" min="0" step="0.1" value="${defaultAncho}" />
+				<div class="hueco-tipo-toggle">
+					<button type="button" class="hueco-tipo-btn" data-hueco-tipo="puerta" aria-pressed="true">Puerta</button>
+					<button type="button" class="hueco-tipo-btn" data-hueco-tipo="ventana" aria-pressed="false">Ventana</button>
 				</div>
-				<div class="wall-field">
-					<span class="wall-field-label">Alto (m)</span>
-					<input type="number" class="hueco-alto" min="0" step="0.1" value="2" />
+				<div class="hueco-inputs">
+					<div class="wall-field">
+						<span class="wall-field-label">Ancho (m)</span>
+						<input type="number" class="hueco-ancho" min="0" step="0.1" value="${defaultAncho}" />
+					</div>
+					<div class="wall-field">
+						<span class="wall-field-label">Alto (m)</span>
+						<input type="number" class="hueco-alto" min="0" step="0.1" value="2" />
+					</div>
+					<div class="wall-field">
+						<span class="wall-field-label">Antepecho (m)</span>
+						<input type="number" class="hueco-antepecho" min="0" step="0.1" value="0" />
+					</div>
+					<button type="button" class="hueco-remove" data-remove-hueco aria-label="Quitar este hueco">✕</button>
 				</div>
-				<button type="button" class="hueco-remove" data-remove-hueco aria-label="Quitar este hueco">✕</button>
 			`;
 			return row;
 		}
@@ -902,6 +940,24 @@ import Base from "../layouts/Base.astro";
 			removeBtn.addEventListener("click", () => {
 				huecoRow.remove();
 				calcular();
+			});
+
+			const tipoBtns = Array.from(huecoRow.querySelectorAll<HTMLButtonElement>("[data-hueco-tipo]"));
+			const altoInput = huecoRow.querySelector(".hueco-alto") as HTMLInputElement;
+			const antepechoInput = huecoRow.querySelector(".hueco-antepecho") as HTMLInputElement;
+			tipoBtns.forEach((btn) => {
+				btn.addEventListener("click", () => {
+					tipoBtns.forEach((b) => b.setAttribute("aria-pressed", "false"));
+					btn.setAttribute("aria-pressed", "true");
+					if (btn.dataset.huecoTipo === "ventana") {
+						altoInput.value = "1.2";
+						antepechoInput.value = "0.9";
+					} else {
+						altoInput.value = "2";
+						antepechoInput.value = "0";
+					}
+					calcular();
+				});
 			});
 		}
 
@@ -1006,9 +1062,10 @@ import Base from "../layouts/Base.astro";
 				const el = h as HTMLElement;
 				const ancho = parseFloat((el.querySelector(".hueco-ancho") as HTMLInputElement).value) || 0;
 				const alto = parseFloat((el.querySelector(".hueco-alto") as HTMLInputElement).value) || 0;
+				const antepecho = parseFloat((el.querySelector(".hueco-antepecho") as HTMLInputElement).value) || 0;
 				const id = el.getAttribute("data-id") || "";
 				const x = parseFloat(el.getAttribute("data-x") || "0") || 0;
-				return { id, ancho, alto, x };
+				return { id, ancho, alto, antepecho, x };
 			});
 		}
 
@@ -1047,8 +1104,9 @@ import Base from "../layouts/Base.astro";
 						.map((h) => {
 							const hx = Math.min(Math.max(h.x, 0), Math.max(w.ancho - h.ancho, 0));
 							const hAltoClamped = Math.min(h.alto, w.alto);
+							const antepechoClamped = Math.min(Math.max(h.antepecho, 0), Math.max(w.alto - hAltoClamped, 0));
 							const hxAbs = x + hx;
-							const hyAbs = y + w.alto - hAltoClamped;
+							const hyAbs = y + w.alto - hAltoClamped - antepechoClamped;
 							return `<rect class="hueco-rect" data-hueco-id="${h.id}" x="${hxAbs}" y="${hyAbs}" width="${h.ancho}" height="${hAltoClamped}" fill="#f6f4ee" stroke="rgba(0,0,0,0.4)" stroke-dasharray="${viewH * 0.012} ${viewH * 0.008}" stroke-width="${viewH * 0.004}" />`;
 						})
 						.join("");

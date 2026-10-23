@@ -59,12 +59,17 @@ import Base from "../layouts/Base.astro";
 											<option value="10" selected>Normal / yeso liso (~10 m²/L)</option>
 											<option value="7">Porosa / gotelé (~7 m²/L)</option>
 											<option value="14">Madera / metal, esmalte (~14 m²/L)</option>
+											<option value="custom">Otro: el rendimiento de mi bote</option>
 										</select>
 									</div>
 									<div class="wall-field wall-field-color">
 										<span class="wall-field-label">Color</span>
 										<input type="color" class="wall-color" value="#e8e4da" />
 									</div>
+								</div>
+								<div class="wall-field wall-rend-custom" hidden>
+									<span class="wall-field-label">Rendimiento de tu bote (m²/L, lo pone en la etiqueta)</span>
+									<input type="number" class="wall-rend" min="1" step="0.5" placeholder="Ej. 12" />
 								</div>
 								<div class="huecos-section">
 									<div class="huecos-header">
@@ -77,8 +82,31 @@ import Base from "../layouts/Base.astro";
 						</div>
 						<button type="button" class="link-btn" id="add-wall">+ Añadir otra pared</button>
 
+						<div class="techo-block">
+							<label class="techo-toggle"><input type="checkbox" id="techo-incluir" /> Incluir también el techo</label>
+							<div class="techo-fields" id="techo-fields" hidden>
+								<div class="wall-field">
+									<span class="wall-field-label">Largo (m)</span>
+									<input type="number" id="techo-largo" min="0" step="0.1" placeholder="0" />
+								</div>
+								<span class="wall-times">×</span>
+								<div class="wall-field">
+									<span class="wall-field-label">Ancho (m)</span>
+									<input type="number" id="techo-ancho" min="0" step="0.1" placeholder="0" />
+								</div>
+								<div class="wall-field wall-field-tipo techo-tipo-field">
+									<span class="wall-field-label">Tipo de superficie</span>
+									<select id="techo-tipo">
+										<option value="12" selected>Lisa, ya pintada (~12 m²/L)</option>
+										<option value="10">Normal / yeso liso (~10 m²/L)</option>
+										<option value="7">Porosa / gotelé (~7 m²/L)</option>
+									</select>
+								</div>
+							</div>
+						</div>
+
 						<p class="superficie-total">
-							Superficie total: <strong id="superficie-total-value">0 m²</strong>
+							Superficie total (paredes y techo): <strong id="superficie-total-value">0 m²</strong>
 						</p>
 
 						<div class="preview-block">
@@ -106,6 +134,7 @@ import Base from "../layouts/Base.astro";
 						<div class="toggle-group" role="radiogroup" aria-label="Número de capas">
 							<button type="button" class="toggle-btn" data-manos="1" aria-pressed="false">1 capa</button>
 							<button type="button" class="toggle-btn" data-manos="2" aria-pressed="true">2 capas</button>
+							<button type="button" class="toggle-btn" data-manos="3" aria-pressed="false">3 capas</button>
 						</div>
 					</fieldset>
 
@@ -206,6 +235,16 @@ import Base from "../layouts/Base.astro";
 						varía mucho según la preparación previa y el tipo de
 						rodillo o brocha.
 					</p>
+
+					<h3>Errores habituales al calcular la pintura</h3>
+					<ul class="error-list">
+						<li><strong>No restar puertas y ventanas.</strong> Pueden sumar varios metros cuadrados y hacerte comprar de más.</li>
+						<li><strong>Olvidar las capas.</strong> El rendimiento del bote es por capa: con dos capas necesitas el doble.</li>
+						<li><strong>Usar el mismo rendimiento para todo.</strong> El gotelé o el yeso nuevo gastan mucha más pintura que una pared lisa ya pintada.</li>
+						<li><strong>No contar el margen.</strong> Esquinas, retoques y pérdidas suman aproximadamente un 10 %.</li>
+						<li><strong>Comprar el bote en dos tandas.</strong> Lotes distintos pueden diferir ligeramente en el tono.</li>
+						<li><strong>Fiarse solo de una tabla genérica.</strong> Si tu pintura indica su rendimiento en la etiqueta, úsalo.</li>
+					</ul>
 				</article>
 
 				<aside class="about-card">
@@ -233,6 +272,9 @@ import Base from "../layouts/Base.astro";
 					<li><a href="/guias/cuanta-pintura-para-un-techo/">¿Cuánta pintura para el techo?</a></li>
 					<li><a href="/guias/cuantos-metros-pinta-un-bote-de-pintura/">¿Cuántos m² pinta un bote de pintura?</a></li>
 					<li><a href="/guias/cuanta-pintura-para-una-fachada/">¿Cuánta pintura para una fachada?</a></li>
+					<li><a href="/guias/pintar-sobre-pared-oscura/">¿Cómo pintar una pared oscura de claro?</a></li>
+					<li><a href="/guias/cuanto-tarda-en-secar-la-pintura/">¿Cuánto tarda en secar la pintura?</a></li>
+					<li><a href="/guias/pintura-para-cocina-y-bano/">Pintura para cocina y baño</a></li>
 				</ul>
 			</div>
 		</section>
@@ -255,8 +297,9 @@ import Base from "../layouts/Base.astro";
 							Cada fabricante formula su pintura de forma distinta:
 							las de gama alta suelen cubrir más por litro que las
 							económicas. Si el envase indica un rendimiento
-							concreto, úsalo en vez del valor orientativo de esta
-							calculadora para un resultado más preciso.
+							concreto, úsalo: en el desplegable de cada pared elige
+							«Otro: el rendimiento de mi bote» y escribe el dato de la
+							etiqueta para un resultado más preciso.
 						</p>
 					</details>
 					<details>
@@ -275,6 +318,36 @@ import Base from "../layouts/Base.astro";
 							que el tono es idéntico en todas las paredes, y
 							redondea hacia arriba: es preferible que sobre un poco
 							a quedarte corto a mitad de faena.
+						</p>
+					</details>
+					<details>
+						<summary>¿Cómo descuento puertas y ventanas?</summary>
+						<p>
+							En cada pared pulsa «+ Añadir hueco» e indica su ancho y su alto. La calculadora resta esa superficie de la pared antes de calcular los litros.
+						</p>
+					</details>
+					<details>
+						<summary>¿Puedo incluir el techo?</summary>
+						<p>
+							Sí. Marca «Incluir también el techo», escribe su largo y su ancho y elige el tipo de superficie. Se suma a los litros, al precio y al tiempo estimado.
+						</p>
+					</details>
+					<details>
+						<summary>¿Cuántos litros necesito para una habitación de 12 m²?</summary>
+						<p>
+							Depende de la altura y de los huecos. Como ejemplo, una habitación de 4 × 3 m con 2,5 m de alto, una puerta y una ventana, pintando paredes y techo con dos capas, necesita unos 8 litros. Introduce tus medidas para el cálculo exacto.
+						</p>
+					</details>
+					<details>
+						<summary>¿Cuánto tarda en secar la pintura entre capas?</summary>
+						<p>
+							Las pinturas plásticas de interior suelen necesitar entre 2 y 4 horas entre capas, pero depende de la temperatura, la humedad y el producto. Consulta siempre el tiempo que indica el envase. La calculadora cuenta solo el tiempo de aplicación, no el secado.
+						</p>
+					</details>
+					<details>
+						<summary>¿Hay que dar imprimación antes de pintar?</summary>
+						<p>
+							Es recomendable sobre yeso nuevo, superficies muy absorbentes, manchas o cuando cambias de un color oscuro a uno claro. Una buena base suele reducir el consumo de la pintura final y mejora el acabado.
 						</p>
 					</details>
 				</div>
@@ -321,7 +394,7 @@ import Base from "../layouts/Base.astro";
 				"name": "¿Por qué mi bote dice un rendimiento distinto?",
 				"acceptedAnswer": {
 					"@type": "Answer",
-					"text": "Cada fabricante formula su pintura de forma distinta: las de gama alta suelen cubrir más por litro que las económicas. Si el envase indica un rendimiento concreto, úsalo en vez del valor orientativo de esta calculadora para un resultado más preciso."
+					"text": "Cada fabricante formula su pintura de forma distinta: las de gama alta suelen cubrir más por litro que las económicas. Si el envase indica un rendimiento concreto, úsalo: en el desplegable de cada pared elige «Otro: el rendimiento de mi bote» y escribe el dato de la etiqueta para un resultado más preciso."
 				}
 			},
 			{
@@ -339,11 +412,51 @@ import Base from "../layouts/Base.astro";
 					"@type": "Answer",
 					"text": "Compra siempre toda la pintura de una vez para asegurar que el tono es idéntico en todas las paredes, y redondea hacia arriba: es preferible que sobre un poco a quedarte corto a mitad de faena."
 				}
+			},
+			{
+				"@type": "Question",
+				"name": "¿Cómo descuento puertas y ventanas?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "En cada pared pulsa «+ Añadir hueco» e indica su ancho y su alto. La calculadora resta esa superficie de la pared antes de calcular los litros."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "¿Puedo incluir el techo?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Sí. Marca «Incluir también el techo», escribe su largo y su ancho y elige el tipo de superficie. Se suma a los litros, al precio y al tiempo estimado."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "¿Cuántos litros necesito para una habitación de 12 m²?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Depende de la altura y de los huecos. Como ejemplo, una habitación de 4 × 3 m con 2,5 m de alto, una puerta y una ventana, pintando paredes y techo con dos capas, necesita unos 8 litros. Introduce tus medidas para el cálculo exacto."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "¿Cuánto tarda en secar la pintura entre capas?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Las pinturas plásticas de interior suelen necesitar entre 2 y 4 horas entre capas, pero depende de la temperatura, la humedad y el producto. Consulta siempre el tiempo que indica el envase. La calculadora cuenta solo el tiempo de aplicación, no el secado."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "¿Hay que dar imprimación antes de pintar?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Es recomendable sobre yeso nuevo, superficies muy absorbentes, manchas o cuando cambias de un color oscuro a uno claro. Una buena base suele reducir el consumo de la pintura final y mejora el acabado."
+				}
 			}
 		]
 	})} />
 
-	<style>
+	<style is:global>
 		.wrap {
 			max-width: 72rem;
 			margin: 0 auto;
@@ -518,6 +631,63 @@ import Base from "../layouts/Base.astro";
 			cursor: pointer;
 		}
 
+
+		/* Techo y rendimiento propio */
+		.wall-rend-custom[hidden],
+		.techo-fields[hidden] {
+			display: none;
+		}
+		.techo-block {
+			margin-top: 0.8rem;
+			display: flex;
+			flex-direction: column;
+			gap: 0.6rem;
+		}
+		.techo-toggle {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			cursor: pointer;
+			font-weight: 600;
+			font-size: 0.92rem;
+		}
+		.techo-fields {
+			display: grid;
+			grid-template-columns: 1fr auto 1fr;
+			align-items: end;
+			gap: 0.5rem;
+			border: 1.5px solid var(--color-line);
+			border-radius: 12px;
+			padding: 0.8rem;
+			background: #fff;
+		}
+		.techo-tipo-field {
+			grid-column: 1 / -1;
+		}
+		.techo-fields input,
+		.techo-fields select {
+			width: 100%;
+			font-family: var(--font-mono);
+			font-size: 1rem;
+			padding: 0.5rem 0.6rem;
+			border: 1.5px solid var(--color-line);
+			border-radius: 8px;
+			background: #fff;
+			color: var(--color-ink);
+		}
+		.techo-fields .wall-field-tipo select {
+			font-family: var(--font-body);
+			font-size: 0.85rem;
+		}
+
+		.error-list {
+			padding-left: 1.2rem;
+			color: var(--color-ink-soft);
+		}
+		.error-list li {
+			margin-bottom: 0.5rem;
+		}
+
 		.preview-block {
 			margin-top: 0.5rem;
 		}
@@ -563,11 +733,11 @@ import Base from "../layouts/Base.astro";
 			color: var(--color-ink-soft);
 			padding: 0 1rem;
 		}
-		:global(.hueco-rect) {
+		.hueco-rect {
 			cursor: ew-resize;
 			touch-action: none;
 		}
-		:global(.mueble-rect) {
+		.mueble-rect {
 			cursor: grab;
 			touch-action: none;
 		}
@@ -1028,6 +1198,32 @@ import Base from "../layouts/Base.astro";
 		let manos = 2;
 		let velocidad = 6;
 
+		function getRendimiento(row: Element): number {
+			const sel = row.querySelector(".wall-tipo") as HTMLSelectElement;
+			if (sel.value === "custom") {
+				const v = parseFloat((row.querySelector(".wall-rend") as HTMLInputElement).value);
+				return v > 0 ? v : 10;
+			}
+			return parseFloat(sel.value) || 10;
+		}
+
+		function syncRendCustom(row: Element) {
+			const sel = row.querySelector(".wall-tipo") as HTMLSelectElement;
+			const box = row.querySelector(".wall-rend-custom") as HTMLElement;
+			box.hidden = sel.value !== "custom";
+		}
+
+		const techoIncluir = $("techo-incluir") as HTMLInputElement;
+		const techoFields = $("techo-fields") as HTMLElement;
+		const techoLargo = $("techo-largo") as HTMLInputElement;
+		const techoAncho = $("techo-ancho") as HTMLInputElement;
+		const techoTipo = $("techo-tipo") as HTMLSelectElement;
+		techoIncluir.addEventListener("change", () => {
+			techoFields.hidden = !techoIncluir.checked;
+			calcular();
+		});
+		[techoLargo, techoAncho, techoTipo].forEach((el) => el.addEventListener("input", calcular));
+
 		function wallCardTemplate(): HTMLElement {
 			const card = document.createElement("div");
 			card.className = "wall-card";
@@ -1054,6 +1250,7 @@ import Base from "../layouts/Base.astro";
 							<option value="10" selected>Normal / yeso liso (~10 m²/L)</option>
 							<option value="7">Porosa / gotelé (~7 m²/L)</option>
 							<option value="14">Madera / metal, esmalte (~14 m²/L)</option>
+											<option value="custom">Otro: el rendimiento de mi bote</option>
 						</select>
 					</div>
 					<div class="wall-field wall-field-color">
@@ -1061,7 +1258,11 @@ import Base from "../layouts/Base.astro";
 						<input type="color" class="wall-color" value="#e8e4da" />
 					</div>
 				</div>
-				<div class="huecos-section">
+				<div class="wall-field wall-rend-custom" hidden>
+									<span class="wall-field-label">Rendimiento de tu bote (m²/L, lo pone en la etiqueta)</span>
+									<input type="number" class="wall-rend" min="1" step="0.5" placeholder="Ej. 12" />
+								</div>
+								<div class="huecos-section">
 					<div class="huecos-header">
 						<span class="wall-field-label">Huecos en esta pared</span>
 						<button type="button" class="link-btn huecos-add" data-add-hueco>+ Añadir hueco</button>
@@ -1146,8 +1347,12 @@ import Base from "../layouts/Base.astro";
 		}
 
 		function attachRowListeners(row: HTMLElement) {
-			const inputs = row.querySelectorAll(".wall-ancho, .wall-alto, .wall-tipo, .wall-color");
+			const inputs = row.querySelectorAll(".wall-ancho, .wall-alto, .wall-tipo, .wall-color, .wall-rend");
 			inputs.forEach((el) => el.addEventListener("input", calcular));
+			(row.querySelector(".wall-tipo") as HTMLSelectElement).addEventListener("change", () => {
+				syncRendCustom(row);
+				calcular();
+			});
 			const removeBtn = row.querySelector("[data-remove-wall]") as HTMLButtonElement;
 			removeBtn.addEventListener("click", () => {
 				row.remove();
@@ -1169,6 +1374,8 @@ import Base from "../layouts/Base.astro";
 				(newCard.querySelector(".wall-alto") as HTMLInputElement).value = (row.querySelector(".wall-alto") as HTMLInputElement).value;
 				(newCard.querySelector(".wall-tipo") as HTMLSelectElement).value = (row.querySelector(".wall-tipo") as HTMLSelectElement).value;
 				(newCard.querySelector(".wall-color") as HTMLInputElement).value = (row.querySelector(".wall-color") as HTMLInputElement).value;
+				(newCard.querySelector(".wall-rend") as HTMLInputElement).value = (row.querySelector(".wall-rend") as HTMLInputElement).value;
+				syncRendCustom(newCard);
 				row.after(newCard);
 				attachRowListeners(newCard);
 
@@ -1508,7 +1715,7 @@ import Base from "../layouts/Base.astro";
 			rows.forEach((row) => {
 				const ancho = parseFloat((row.querySelector(".wall-ancho") as HTMLInputElement).value) || 0;
 				const alto = parseFloat((row.querySelector(".wall-alto") as HTMLInputElement).value) || 0;
-				const rendimiento = parseFloat((row.querySelector(".wall-tipo") as HTMLSelectElement).value) || 10;
+				const rendimiento = getRendimiento(row);
 				const huecosArea = getHuecosDeParedRaw(row).reduce((sum, h) => sum + Math.max(h.ancho, 0) * Math.max(h.alto, 0), 0);
 
 				const area = Math.max(ancho * alto - huecosArea, 0);
@@ -1518,6 +1725,15 @@ import Base from "../layouts/Base.astro";
 					litrosSinRedondear += (area / rendimiento) * manos * 1.1;
 				}
 			});
+
+			if (techoIncluir.checked) {
+				const tArea = (parseFloat(techoLargo.value) || 0) * (parseFloat(techoAncho.value) || 0);
+				const tRend = parseFloat(techoTipo.value) || 12;
+				if (tArea > 0) {
+					superficieTotal += tArea;
+					litrosSinRedondear += (tArea / tRend) * manos * 1.1;
+				}
+			}
 
 			superficieTotalValue.textContent = `${superficieTotal.toFixed(1)} m²`;
 			renderPreview(rows);
@@ -1556,6 +1772,7 @@ import Base from "../layouts/Base.astro";
 				ancho: (row.querySelector(".wall-ancho") as HTMLInputElement).value,
 				alto: (row.querySelector(".wall-alto") as HTMLInputElement).value,
 				tipo: (row.querySelector(".wall-tipo") as HTMLSelectElement).value,
+				rend: (row.querySelector(".wall-rend") as HTMLInputElement).value,
 				color: (row.querySelector(".wall-color") as HTMLInputElement).value,
 				huecos: getHuecosDeParedRaw(row),
 			}));
@@ -1564,6 +1781,7 @@ import Base from "../layouts/Base.astro";
 				manos,
 				velocidad,
 				precio: precioInput.value,
+				techo: { incluir: techoIncluir.checked, largo: techoLargo.value, ancho: techoAncho.value, tipo: techoTipo.value },
 				walls,
 				muebles,
 			};
@@ -1601,6 +1819,8 @@ import Base from "../layouts/Base.astro";
 				(card.querySelector(".wall-ancho") as HTMLInputElement).value = w.ancho || "";
 				(card.querySelector(".wall-alto") as HTMLInputElement).value = w.alto || "";
 				if (w.tipo) (card.querySelector(".wall-tipo") as HTMLSelectElement).value = w.tipo;
+				if (w.rend) (card.querySelector(".wall-rend") as HTMLInputElement).value = w.rend;
+				syncRendCustom(card);
 				if (w.color) (card.querySelector(".wall-color") as HTMLInputElement).value = w.color;
 				wallsContainer.appendChild(card);
 				attachRowListeners(card);
@@ -1642,6 +1862,13 @@ import Base from "../layouts/Base.astro";
 			}
 			if (state.precio) {
 				precioInput.value = state.precio;
+			}
+			if (state.techo) {
+				techoLargo.value = state.techo.largo || "";
+				techoAncho.value = state.techo.ancho || "";
+				if (state.techo.tipo) techoTipo.value = state.techo.tipo;
+				techoIncluir.checked = !!state.techo.incluir;
+				techoFields.hidden = !techoIncluir.checked;
 			}
 
 			calcular();

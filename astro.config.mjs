@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://calculadora-pintura.expediente-opositor.workers.dev',
+	site: 'https://calculatupintura.com',
 	integrations: [sitemap()],
 	build: {
 		inlineStylesheets: "always",

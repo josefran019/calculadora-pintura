@@ -1,0 +1,27 @@
+---
+import Guia from "../../layouts/Guia.astro";
+---
+
+<Guia
+	title="¿Cuántos metros cuadrados pinta un bote de pintura de 15 litros? | CalculaTuPintura"
+	description="Cuántos m² cubre un bote de pintura de 4, 5, 10 y 15 litros según el rendimiento y las capas, con una tabla de referencia."
+	h1="¿Cuántos metros cuadrados pinta un bote de pintura?"
+>
+<p>Depende del rendimiento (m² por litro) y de las capas. Como referencia, con un rendimiento de 12 m²/L en una pared lisa, un bote de <strong>15 L cubre unos 180 m² con una capa, o unos 90 m² con dos</strong>.</p>
+<h2>Fórmula</h2>
+<p class="formula">m² por bote = litros del bote × rendimiento ÷ capas</p>
+<h2>Tabla de referencia (rendimiento 12 m²/L)</h2>
+<table>
+	<thead><tr><th>Bote</th><th>1 capa</th><th>2 capas</th></tr></thead>
+	<tbody>
+		<tr><td>4 L</td><td>48 m²</td><td>24 m²</td></tr>
+		<tr><td>5 L</td><td>60 m²</td><td>30 m²</td></tr>
+		<tr><td>10 L</td><td>120 m²</td><td>60 m²</td></tr>
+		<tr><td>15 L</td><td>180 m²</td><td>90 m²</td></tr>
+	</tbody>
+</table>
+<h2>Si la pared no es lisa</h2>
+<p>Con gotelé u otra superficie porosa (unos 6 m²/L), las cifras se reducen a la mitad: un bote de 15 L cubriría unos 90 m² con una capa y unos 45 m² con dos.</p>
+<p>No olvides el margen: la fórmula anterior es el máximo teórico. En la práctica, resta un 10 % para esquinas, retoques y pérdidas. Y confirma siempre el dato en la etiqueta de tu pintura, porque cambia entre fabricantes.</p>
+<p>Para saber qué bote comprar, usa la <a href="/">calculadora de pintura</a> o repasa <a href="/guias/cuantos-litros-de-pintura-por-m2/">los rendimientos por superficie</a>.</p>
+</Guia>

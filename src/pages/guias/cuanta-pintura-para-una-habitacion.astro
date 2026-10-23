@@ -1,0 +1,35 @@
+---
+import Guia from "../../layouts/Guia.astro";
+---
+
+<Guia
+	title="¿Cuánta pintura necesito para una habitación? Ejemplo paso a paso | CalculaTuPintura"
+	description="Calcula cuánta pintura necesitas para pintar una habitación: cómo medir paredes y techo, descontar puertas y ventanas, y un ejemplo resuelto con litros y botes."
+	h1="¿Cuánta pintura necesito para pintar una habitación?"
+>
+<p>Para una habitación de tamaño medio (unos 12 m² de suelo) suele bastar con <strong>unos 8 litros</strong> si pintas paredes y techo con dos capas. Te explico cómo sacar el número para tu caso.</p>
+<h2>Paso 1: mide la habitación</h2>
+<p>Necesitas largo, ancho y altura. Para las paredes: perímetro × altura, es decir, 2 × (largo + ancho) × altura. El techo es largo × ancho.</p>
+<h2>Paso 2: descuenta puertas y ventanas</h2>
+<p>Resta a mano los huecos que no vas a pintar. Una puerta estándar ronda 1,6 m² y una ventana mediana 1,5 m², aunque lo mejor es medir las tuyas.</p>
+<h2>Ejemplo: habitación de 4 × 3 m y 2,5 m de alto</h2>
+<table>
+	<thead><tr><th>Concepto</th><th>Cálculo</th><th>Resultado</th></tr></thead>
+	<tbody>
+		<tr><td>Superficie de paredes</td><td>2 × (4 + 3) × 2,5</td><td>35 m²</td></tr>
+		<tr><td>Menos puerta y ventana</td><td>35 − 1,6 − 1,5</td><td>31,9 m²</td></tr>
+		<tr><td>Litros de paredes (12 m²/L, 2 capas, +10 %)</td><td>31,9 ÷ 12 × 2 × 1,10</td><td>5,8 L</td></tr>
+		<tr><td>Superficie del techo</td><td>4 × 3</td><td>12 m²</td></tr>
+		<tr><td>Litros de techo (12 m²/L, 2 capas, +10 %)</td><td>12 ÷ 12 × 2 × 1,10</td><td>2,2 L</td></tr>
+		<tr><td><strong>Total</strong></td><td></td><td><strong>8 L</strong></td></tr>
+	</tbody>
+</table>
+<p>En botes: dos de 4 L o uno de 5 L más otro de 4 L. Si usas el mismo color en paredes y techo, compra todo junto para que no varíe el tono.</p>
+<h2>Consejos para no quedarte corto</h2>
+<ul>
+	<li>Compra el bote de más de golpe: el mismo lote evita diferencias de tono.</li>
+	<li>Si la pared es nueva o está muy absorbente, cuenta con más pintura en la primera capa.</li>
+	<li>Guarda un poco para retoques futuros.</li>
+</ul>
+<p>Más datos en <a href="/guias/cuantos-litros-de-pintura-por-m2/">cuántos litros de pintura necesitas por m²</a>.</p>
+</Guia>

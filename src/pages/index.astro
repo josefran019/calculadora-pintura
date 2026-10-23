@@ -222,6 +222,18 @@ import Base from "../layouts/Base.astro";
 			</div>
 		</section>
 
+		<section class="content" id="guias">
+			<div class="wrap">
+				<h2>Guías de pintura</h2>
+				<ul>
+					<li><a href="/guias/cuantos-litros-de-pintura-por-m2/">¿Cuántos litros de pintura necesito por m²?</a></li>
+					<li><a href="/guias/cuanta-pintura-para-una-habitacion/">¿Cuánta pintura necesito para una habitación?</a></li>
+					<li><a href="/guias/cuanta-pintura-para-gotele/">¿Cuánta pintura necesito para gotelé?</a></li>
+					<li><a href="/guias/cuantas-manos-de-pintura-dar/">¿Cuántas manos de pintura hay que dar?</a></li>
+				</ul>
+			</div>
+		</section>
+
 		<section class="content faq" id="faq">
 			<div class="wrap">
 				<h2>Preguntas frecuentes</h2>
@@ -278,6 +290,17 @@ import Base from "../layouts/Base.astro";
 		</div>
 	</footer>
 
+	<script type="application/ld+json" set:html={JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "WebApplication",
+		"name": "CalculaTuPintura",
+		"url": "https://calculatupintura.com/",
+		"description": "Calculadora gratuita de pintura: litros, botes y tiempo estimado según las medidas, el tipo de superficie y las capas.",
+		"applicationCategory": "UtilitiesApplication",
+		"operatingSystem": "Web",
+		"inLanguage": "es",
+		"offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+	})} />
 	<script type="application/ld+json" set:html={JSON.stringify({
 		"@context": "https://schema.org",
 		"@type": "FAQPage",

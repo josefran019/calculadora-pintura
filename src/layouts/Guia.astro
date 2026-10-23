@@ -1,0 +1,61 @@
+---
+import Base from "./Base.astro";
+interface Props {
+	title: string;
+	description: string;
+	h1: string;
+}
+const { title, description, h1 } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const ld = {
+	"@context": "https://schema.org",
+	"@type": "Article",
+	headline: h1,
+	description,
+	inLanguage: "es",
+	datePublished: "2026-10-24",
+	dateModified: "2026-10-24",
+	mainEntityOfPage: url,
+	author: { "@type": "Person", name: "Jose" },
+	publisher: { "@type": "Organization", name: "CalculaTuPintura", url: "https://calculatupintura.com/" },
+};
+---
+
+<Base title={title} description={description}>
+	<main class="wrap guia">
+		<a class="back" href="/">← Calculadora de pintura</a>
+		<h1>{h1}</h1>
+		<slot />
+		<aside class="cta">
+			<strong>¿Quieres el cálculo exacto de tu casa?</strong>
+			<p>
+				Mete las medidas de cada pared y la calculadora te dice los litros,
+				los botes y el tiempo estimado. Gratis y sin registro.
+			</p>
+			<a class="btn" href="/">Abrir la calculadora de pintura</a>
+		</aside>
+		<nav class="mas" aria-label="Más guías">
+			<strong>Más guías</strong>
+			<ul>
+				<li><a href="/guias/cuantos-litros-de-pintura-por-m2/">¿Cuántos litros de pintura por m²?</a></li>
+				<li><a href="/guias/cuanta-pintura-para-una-habitacion/">¿Cuánta pintura para una habitación?</a></li>
+				<li><a href="/guias/cuanta-pintura-para-gotele/">¿Cuánta pintura para gotelé?</a></li>
+				<li><a href="/guias/cuantas-manos-de-pintura-dar/">¿Cuántas manos de pintura dar?</a></li>
+			</ul>
+		</nav>
+	</main>
+	<script type="application/ld+json" set:html={JSON.stringify(ld)} />
+	<style is:global>
+		.guia { max-width: 42rem; padding-block: 3rem; }
+		.guia .back { font-size: .85rem; color: var(--color-ink-soft); text-decoration: none; }
+		.guia h1 { margin: 1.5rem 0 1.2rem; font-size: 2rem; }
+		.guia h2 { margin: 2rem 0 .8rem; font-size: 1.35rem; }
+		.guia p, .guia li { color: var(--color-ink-soft); margin-bottom: 1rem; }
+		.guia table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: .95rem; }
+		.guia th, .guia td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--color-line); }
+		.guia .formula { font-family: var(--font-mono); background: var(--color-bg-panel); padding: .8rem 1rem; border-radius: 6px; color: var(--color-ink); }
+		.guia .cta { margin: 2.5rem 0 1.5rem; padding: 1.2rem 1.4rem; background: var(--color-bg-panel); border: 1px solid var(--color-line); border-radius: 8px; }
+		.guia .btn { display: inline-block; background: var(--color-petrol); color: #fff; padding: .6rem 1rem; border-radius: 6px; text-decoration: none; font-weight: 600; }
+		.guia .mas ul { padding-left: 1.2rem; }
+	</style>
+</Base>

@@ -87,7 +87,7 @@ import GuiasLista from "../components/GuiasLista.astro";
 								<div class="huecos-section">
 									<div class="huecos-header">
 										<span class="wall-field-label">Huecos en esta pared</span>
-										<button type="button" class="link-btn huecos-add" data-add-hueco>+ Añadir hueco</button>
+										<span class="huecos-btns"><button type="button" class="link-btn huecos-add" data-add-hueco="puerta">+ Puerta</button><button type="button" class="link-btn huecos-add" data-add-hueco="ventana">+ Ventana</button><button type="button" class="link-btn huecos-add" data-add-hueco="">+ Añadir hueco</button></span>
 									</div>
 									<div class="huecos-list" data-huecos-list></div>
 								</div>
@@ -1075,6 +1075,12 @@ import GuiasLista from "../components/GuiasLista.astro";
 		.huecos-add {
 			font-size: 0.78rem;
 		}
+		.huecos-btns {
+			display: flex;
+			gap: 0.8rem;
+			flex-wrap: wrap;
+			justify-content: flex-end;
+		}
 		.huecos-list {
 			display: flex;
 			flex-direction: column;
@@ -1286,7 +1292,7 @@ import GuiasLista from "../components/GuiasLista.astro";
 								<div class="huecos-section">
 					<div class="huecos-header">
 						<span class="wall-field-label">Huecos en esta pared</span>
-						<button type="button" class="link-btn huecos-add" data-add-hueco>+ Añadir hueco</button>
+						<span class="huecos-btns"><button type="button" class="link-btn huecos-add" data-add-hueco="puerta">+ Puerta</button><button type="button" class="link-btn huecos-add" data-add-hueco="ventana">+ Ventana</button><button type="button" class="link-btn huecos-add" data-add-hueco="">+ Añadir hueco</button></span>
 					</div>
 					<div class="huecos-list" data-huecos-list></div>
 				</div>
@@ -1343,14 +1349,17 @@ import GuiasLista from "../components/GuiasLista.astro";
 			const tipoBtns = Array.from(huecoRow.querySelectorAll<HTMLButtonElement>("[data-hueco-tipo]"));
 			const altoInput = huecoRow.querySelector(".hueco-alto") as HTMLInputElement;
 			const antepechoInput = huecoRow.querySelector(".hueco-antepecho") as HTMLInputElement;
+			const anchoInput = huecoRow.querySelector(".hueco-ancho") as HTMLInputElement;
 			tipoBtns.forEach((btn) => {
 				btn.addEventListener("click", () => {
 					tipoBtns.forEach((b) => b.setAttribute("aria-pressed", "false"));
 					btn.setAttribute("aria-pressed", "true");
 					if (btn.dataset.huecoTipo === "ventana") {
+						anchoInput.value = "1.2";
 						altoInput.value = "1.2";
 						antepechoInput.value = "0.9";
 					} else {
+						anchoInput.value = "0.8";
 						altoInput.value = "2";
 						antepechoInput.value = "0";
 					}
@@ -1380,13 +1389,18 @@ import GuiasLista from "../components/GuiasLista.astro";
 				refreshRemoveButtons();
 				calcular();
 			});
-			const addHuecoBtn = row.querySelector("[data-add-hueco]") as HTMLButtonElement;
 			const huecosList = row.querySelector("[data-huecos-list]") as HTMLElement;
-			addHuecoBtn.addEventListener("click", () => {
-				const huecoRow = huecoRowTemplate(row);
-				huecosList.appendChild(huecoRow);
-				attachHuecoListeners(huecoRow);
-				calcular();
+			row.querySelectorAll<HTMLButtonElement>("[data-add-hueco]").forEach((addHuecoBtn) => {
+				addHuecoBtn.addEventListener("click", () => {
+					const huecoRow = huecoRowTemplate(row);
+					huecosList.appendChild(huecoRow);
+					attachHuecoListeners(huecoRow);
+					if (addHuecoBtn.dataset.addHueco === "ventana") {
+						(huecoRow.querySelector('[data-hueco-tipo="ventana"]') as HTMLButtonElement).click();
+					} else {
+						calcular();
+					}
+				});
 			});
 			const duplicateBtn = row.querySelector("[data-duplicate-wall]") as HTMLButtonElement;
 			duplicateBtn.addEventListener("click", () => {

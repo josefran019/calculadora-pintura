@@ -18,6 +18,9 @@ export const guias: Guia[] = [
 	{ slug: "cuantas-manos-de-pintura-dar", titulo: "¿Cuántas manos de pintura dar?", corto: "Cuántas manos dar", tipo: "Consejos" , grupo: "Dudas generales" },
 	{ slug: "pintar-sobre-pared-oscura", titulo: "¿Cómo pintar una pared oscura de claro?", corto: "Pared oscura a claro", tipo: "Consejos" , grupo: "Paredes" },
 	{ slug: "cuanto-tarda-en-secar-la-pintura", titulo: "¿Cuánto tarda en secar la pintura?", corto: "Tiempo de secado", tipo: "Consejos" , grupo: "Dudas generales" },
+	{ slug: "cuanta-pintura-para-el-techo-de-un-salon", titulo: "¿Cuánta pintura necesito para el techo de un salón?", corto: "Techo de un salón", tipo: "Por estancia", grupo: "Techo" },
+	{ slug: "como-pintar-un-techo-sin-marcas", titulo: "¿Cómo pintar un techo sin marcas?", corto: "Pintar sin marcas", tipo: "Consejos", grupo: "Techo" },
+	{ slug: "pintura-para-techo-con-manchas-de-humedad", titulo: "¿Cómo pintar un techo con manchas de humedad?", corto: "Techo con humedad", tipo: "Consejos", grupo: "Techo" },
 ];
 
 export const grupos = ["Paredes", "Techo", "Dudas generales"];

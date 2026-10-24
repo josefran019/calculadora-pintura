@@ -1,0 +1,35 @@
+---
+import { guias, grupos } from "../data/guias";
+const { actual = "", abiertos = false } = Astro.props;
+const actualSlug = actual.replace(/\/$/, "");
+const grupoActual = guias.find((g) => `/guias/${g.slug}` === actualSlug)?.grupo;
+---
+<div class="gl">
+	{grupos.map((gr) => {
+		const items = guias.filter((g) => g.grupo === gr && `/guias/${g.slug}` !== actualSlug);
+		return items.length ? (
+			<details class="gl-grupo" open={abiertos || gr === grupoActual}>
+				<summary><span>{gr}</span><em>{items.length}</em></summary>
+				<ul>
+					{items.map((g) => (
+						<li><a href={`/guias/${g.slug}/`}>{abiertos ? g.corto : g.titulo}</a></li>
+					))}
+				</ul>
+			</details>
+		) : null;
+	})}
+</div>
+<style is:global>
+	.gl { display: grid; gap: .7rem; }
+	.gl-grupo { background: var(--color-bg-panel); border: 1px solid var(--color-line); border-radius: 12px; overflow: hidden; }
+	.gl-grupo summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; padding: .9rem 1.1rem; font-family: var(--font-display); font-size: 1.05rem; color: var(--color-ink); }
+	.gl-grupo summary::-webkit-details-marker { display: none; }
+	.gl-grupo summary::after { content: "+"; font-size: 1.4rem; color: var(--color-petrol); margin-left: .8rem; }
+	.gl-grupo[open] summary::after { content: "–"; }
+	.gl-grupo summary span { flex: 1; }
+	.gl-grupo summary em { font-style: normal; font-family: var(--font-mono); font-size: .75rem; background: rgba(43,110,110,.14); color: var(--color-petrol-ink); padding: .1rem .55rem; border-radius: 99px; }
+	.gl-grupo ul { list-style: none; margin: 0; padding: 0 1.1rem 1rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .1rem 1.2rem; }
+	.gl-grupo li { margin: 0; }
+	.gl-grupo a { display: block; padding: .5rem 0; border-top: 1px solid var(--color-line); color: var(--color-ink); text-decoration: none; font-weight: 600; font-size: .95rem; }
+	.gl-grupo a:hover { color: var(--color-petrol); text-decoration: underline; }
+</style>

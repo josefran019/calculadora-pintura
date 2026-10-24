@@ -6,12 +6,9 @@ interface Props {
 	h1: string;
 }
 import Rodillo from "../components/Rodillo.astro";
-import { guias } from "../data/guias";
+import GuiasLista from "../components/GuiasLista.astro";
 const { title, description, h1 } = Astro.props;
 const actual = Astro.url.pathname.replace(/\/$/, "");
-const resto = guias.filter((g) => `/guias/${g.slug}` !== actual);
-const tipoActual = guias.find((g) => `/guias/${g.slug}` === actual)?.tipo;
-const otras = [...resto.filter((g) => g.tipo === tipoActual), ...resto.filter((g) => g.tipo !== tipoActual)].slice(0, 6);
 let cuerpo = await Astro.slots.render("default");
 const partes = cuerpo.split("<h2");
 if (partes.length > 3) {
@@ -61,11 +58,7 @@ const ld = {
 		</aside>
 		<nav class="mas" aria-label="Más guías">
 			<h2>Más guías</h2>
-			<ul>
-				{otras.map((g) => (
-					<li><a href={`/guias/${g.slug}/`}><span class="chip">{g.tipo}</span>{g.titulo}</a></li>
-				))}
-			</ul>
+			<GuiasLista actual={Astro.url.pathname} />
 		</nav>
 	</main>
 	<script type="application/ld+json" set:html={JSON.stringify(ld)} />
@@ -106,10 +99,6 @@ const ld = {
 		.guia .cta { display: flex; gap: 1.5rem; align-items: center; justify-content: space-between; flex-wrap: wrap; margin: 3rem 0 2.5rem; padding: 1.7rem 1.8rem; background: var(--color-petrol-ink); color: #fff; border-radius: 14px; }
 		.guia .cta strong { font-family: var(--font-display); font-size: 1.3rem; font-weight: 400; color: #fff; }
 		.guia .cta p { color: #cfe3e0; margin: .5rem 0 0; max-width: 28rem; }
-		.guia .mas ul { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: .8rem; }
-		.guia .mas li { margin: 0; }
-		.guia .mas a { display: block; height: 100%; padding: .9rem 1rem; background: var(--color-bg-panel); border: 1px solid var(--color-line); border-radius: 10px; color: var(--color-ink); text-decoration: none; font-weight: 600; line-height: 1.3; transition: transform .15s, border-color .15s; }
-		.guia .mas a:hover { transform: translateY(-2px); border-color: var(--color-petrol); }
 		.chip { display: block; width: fit-content; margin-bottom: .45rem; padding: .1rem .5rem; border-radius: 99px; background: rgba(43, 110, 110, .14); color: var(--color-petrol-ink); font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; }
 	</style>
 </Base>

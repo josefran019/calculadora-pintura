@@ -1,7 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import Rodillo from "../components/Rodillo.astro";
-import { guias } from "../data/guias";
+import GuiasLista from "../components/GuiasLista.astro";
 ---
 
 <Base
@@ -278,11 +278,7 @@ import { guias } from "../data/guias";
 			<div class="wrap">
 				<h2>Guías de pintura</h2>
 				<p class="guias-intro">Tablas, ejemplos y consejos para calcular cuánta pintura comprar en cada caso.</p>
-				<ul class="guias-grid">
-					{guias.map((g) => (
-						<li><a href={`/guias/${g.slug}/`}><span class="chip">{g.tipo}</span>{g.corto}<span class="arrow" aria-hidden="true">→</span></a></li>
-					))}
-				</ul>
+				<GuiasLista abiertos={true} />
 			</div>
 		</section>
 

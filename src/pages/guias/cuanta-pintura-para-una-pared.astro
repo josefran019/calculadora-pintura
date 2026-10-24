@@ -1,0 +1,28 @@
+---
+import Guia from "../../layouts/Guia.astro";
+---
+
+<Guia
+	title="¿Cuánta pintura para una pared? Tabla por tamaño | CalculaTuPintura"
+	description="Litros de pintura para una sola pared según su tamaño: tabla con 3, 4, 5 y 6 metros de ancho y 2,5 m de alto."
+	h1="¿Cuánta pintura necesito para pintar una pared?"
+>
+<p>Una pared de <strong>4 × 2,5 m (10 m²)</strong> necesita unos <strong>2,5 litros</strong> a dos capas con una pintura que rinda 10 m²/L. Aquí tienes otros tamaños.</p>
+<h2>Litros por pared (rendimiento 10 m²/L, +10 %)</h2>
+<table>
+	<thead><tr><th>Pared</th><th>Superficie</th><th>1 capa</th><th>2 capas</th></tr></thead>
+	<tbody>
+		<tr><td>3 × 2,5 m</td><td>7,5 m²</td><td>1 L</td><td>2 L</td></tr>
+		<tr><td>4 × 2,5 m</td><td>10 m²</td><td>1,5 L</td><td>2,5 L</td></tr>
+		<tr><td>5 × 2,5 m</td><td>12,5 m²</td><td>1,5 L</td><td>3 L</td></tr>
+		<tr><td>6 × 2,5 m</td><td>15 m²</td><td>2 L</td><td>3,5 L</td></tr>
+	</tbody>
+</table>
+<p>Si la pared tiene puerta o ventana, resta su superficie (una puerta ronda 1,6 m² y una ventana 1,5 m²). Los valores incluyen un 10 % de margen para esquinas y retoques. El rendimiento (m²/L) es orientativo: el dato exacto está en el envase de tu pintura.</p>
+<h2>Fórmula</h2>
+<p class="formula">litros = (ancho × alto ÷ rendimiento) × capas × 1,10</p>
+<h2>Para una sola pared compra poco</h2>
+<p>Un bote de 1 o 2 L suele bastar para una pared aislada (acento). Si cambias a un color muy distinto, cuenta con una capa más.</p>
+<p>Si pintas toda la habitación, mira <a href="/guias/cuanta-pintura-para-una-habitacion/">cuánta pintura para una habitación</a>.</p>
+<p>Para tu caso exacto, abre la <a href="/">calculadora de pintura</a>: añade cada pared, descuenta puertas y ventanas con «+ Añadir hueco» y marca el techo si lo vas a pintar.</p>
+</Guia>

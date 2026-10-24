@@ -5,7 +5,17 @@ interface Props {
 	description: string;
 	h1: string;
 }
+import Rodillo from "../components/Rodillo.astro";
+import { guias } from "../data/guias";
 const { title, description, h1 } = Astro.props;
+const actual = Astro.url.pathname.replace(/\/$/, "");
+const otras = guias.filter((g) => `/guias/${g.slug}` !== actual);
+let cuerpo = await Astro.slots.render("default");
+const partes = cuerpo.split("<h2");
+if (partes.length > 3) {
+	partes.splice(3, 0, "");
+	cuerpo = partes[0] + "<h2" + partes[1] + "<h2" + partes[2] + `<aside class="cta-mid"><span>¿Tienes otras medidas?</span><a class="btn btn-ochre" href="/">Calcúlalo ahora</a></aside><h2` + partes.slice(4).join("<h2");
+}
 const url = new URL(Astro.url.pathname, Astro.site).href;
 const ld = {
 	"@context": "https://schema.org",
@@ -22,54 +32,82 @@ const ld = {
 ---
 
 <Base title={title} description={description}>
+	<header class="g-top">
+		<div class="g-top-in">
+			<a class="g-brand" href="/"><span class="g-swatch" aria-hidden="true"></span>CalculaTuPintura</a>
+			<a class="g-link" href="/">Calculadora</a>
+		</div>
+	</header>
+	<section class="g-hero">
+		<div class="g-hero-in">
+			<div>
+				<a class="back" href="/">← Calculadora de pintura</a>
+				<p class="g-eyebrow">Guía de pintura</p>
+				<h1>{h1}</h1>
+			</div>
+			<Rodillo class="g-illu" />
+		</div>
+	</section>
 	<main class="wrap guia">
-		<a class="back" href="/">← Calculadora de pintura</a>
-		<h1>{h1}</h1>
-		<slot />
+		<div class="guia-body" set:html={cuerpo} />
 		<aside class="cta">
-			<strong>¿Quieres el cálculo exacto de tu casa?</strong>
-			<p>
-				Mete las medidas de cada pared y la calculadora te dice los litros,
-				los botes y el tiempo estimado. Gratis y sin registro.
-			</p>
-			<a class="btn" href="/">Abrir la calculadora de pintura</a>
+			<div>
+				<strong>¿Quieres el cálculo exacto de tu casa?</strong>
+				<p>Mete las medidas de cada pared y la calculadora te dice los litros, los botes y el tiempo estimado. Gratis y sin registro.</p>
+			</div>
+			<a class="btn btn-ochre" href="/">Abrir la calculadora</a>
 		</aside>
 		<nav class="mas" aria-label="Más guías">
-			<strong>Más guías</strong>
+			<h2>Más guías</h2>
 			<ul>
-				<li><a href="/guias/cuantos-litros-de-pintura-por-m2/">¿Cuántos litros de pintura por m²?</a></li>
-				<li><a href="/guias/cuanta-pintura-para-una-habitacion/">¿Cuánta pintura para una habitación?</a></li>
-				<li><a href="/guias/cuanta-pintura-para-gotele/">¿Cuánta pintura para gotelé?</a></li>
-				<li><a href="/guias/cuantas-manos-de-pintura-dar/">¿Cuántas manos de pintura dar?</a></li>
-				<li><a href="/guias/cuanta-pintura-para-un-techo/">¿Cuánta pintura para el techo?</a></li>
-				<li><a href="/guias/cuantos-metros-pinta-un-bote-de-pintura/">¿Cuántos m² pinta un bote de pintura?</a></li>
-				<li><a href="/guias/cuanta-pintura-para-una-fachada/">¿Cuánta pintura para una fachada?</a></li>
-				<li><a href="/guias/pintar-sobre-pared-oscura/">¿Cómo pintar una pared oscura de claro?</a></li>
-				<li><a href="/guias/cuanto-tarda-en-secar-la-pintura/">¿Cuánto tarda en secar la pintura?</a></li>
-				<li><a href="/guias/pintura-para-cocina-y-bano/">Pintura para cocina y baño</a></li>
-				<li><a href="/guias/litros-de-pintura-para-50-m2/">¿Cuántos litros de pintura para 50 m²?</a></li>
-				<li><a href="/guias/litros-de-pintura-para-100-m2/">¿Cuántos litros de pintura para 100 m²?</a></li>
-				<li><a href="/guias/litros-de-pintura-para-un-salon/">¿Cuánta pintura necesito para pintar un salón?</a></li>
-				<li><a href="/guias/litros-de-pintura-para-un-piso-de-90-m2/">¿Cuánta pintura necesito para pintar un piso de 90 m²?</a></li>
-				<li><a href="/guias/litros-de-pintura-para-30-m2/">¿Cuántos litros de pintura necesito para 30 m²?</a></li>
-				<li><a href="/guias/cuanta-pintura-para-un-dormitorio/">¿Cuánta pintura necesito para un dormitorio?</a></li>
-				<li><a href="/guias/cuanta-pintura-para-un-pasillo/">¿Cuánta pintura necesito para pintar un pasillo?</a></li>
-				<li><a href="/guias/cuanta-pintura-para-una-pared/">¿Cuánta pintura necesito para pintar una pared?</a></li>
+				{otras.map((g) => (
+					<li><a href={`/guias/${g.slug}/`}><span class="chip">{g.tipo}</span>{g.titulo}</a></li>
+				))}
 			</ul>
 		</nav>
 	</main>
 	<script type="application/ld+json" set:html={JSON.stringify(ld)} />
 	<style is:global>
-		.guia { max-width: 42rem; padding-block: 3rem; }
-		.guia .back { font-size: .85rem; color: var(--color-ink-soft); text-decoration: none; }
-		.guia h1 { margin: 1.5rem 0 1.2rem; font-size: 2rem; }
-		.guia h2 { margin: 2rem 0 .8rem; font-size: 1.35rem; }
-		.guia p, .guia li { color: var(--color-ink-soft); margin-bottom: 1rem; }
-		.guia table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: .95rem; }
-		.guia th, .guia td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--color-line); }
-		.guia .formula { font-family: var(--font-mono); background: var(--color-bg-panel); padding: .8rem 1rem; border-radius: 6px; color: var(--color-ink); }
-		.guia .cta { margin: 2.5rem 0 1.5rem; padding: 1.2rem 1.4rem; background: var(--color-bg-panel); border: 1px solid var(--color-line); border-radius: 8px; }
-		.guia .btn { display: inline-block; background: var(--color-petrol); color: #fff; padding: .6rem 1rem; border-radius: 6px; text-decoration: none; font-weight: 600; }
-		.guia .mas ul { padding-left: 1.2rem; }
+		.g-top { background: var(--color-petrol-ink); }
+		.g-top-in { max-width: 64rem; margin: 0 auto; padding: .8rem 1.25rem; display: flex; justify-content: space-between; align-items: center; }
+		.g-brand { color: #fff; text-decoration: none; font-family: var(--font-display); font-size: 1rem; display: inline-flex; align-items: center; gap: .55rem; }
+		.g-swatch { width: 18px; height: 18px; border-radius: 4px; background: linear-gradient(135deg, var(--color-ochre) 50%, var(--color-oxide) 50%); }
+		.g-link { color: #cfe3e0; font-size: .9rem; text-decoration: none; }
+		.g-link:hover { color: #fff; }
+		.g-hero { background: var(--color-petrol-ink); color: #fff; padding: 1.2rem 0 4.2rem; }
+		.g-hero-in { max-width: 64rem; margin: 0 auto; padding: 0 1.25rem; display: grid; grid-template-columns: 1fr 15rem; gap: 2rem; align-items: center; }
+		.g-hero .back { color: #cfe3e0; font-size: .85rem; text-decoration: none; }
+		.g-eyebrow { margin: 1.6rem 0 .6rem; font-family: var(--font-mono); font-size: .75rem; text-transform: uppercase; letter-spacing: .12em; color: var(--color-ochre); }
+		.g-hero h1 { color: #fff; font-size: clamp(1.7rem, 4.2vw, 2.7rem); margin: 0; }
+		.g-illu { width: 100%; height: auto; }
+		@media (max-width: 640px) { .g-hero-in { grid-template-columns: 1fr; } .g-illu { max-width: 10rem; } }
+		.guia { max-width: 46rem; padding: 0 1.25rem 3rem; }
+		.guia-body > p:first-of-type { position: relative; margin: -2.6rem 0 2rem; padding: 1.3rem 1.5rem; background: var(--color-bg-panel); border: 1px solid var(--color-line); border-left: 6px solid var(--color-ochre); border-radius: 10px; font-size: 1.12rem; line-height: 1.55; color: var(--color-ink); box-shadow: 0 10px 28px -14px rgba(38, 36, 31, .35); }
+		.guia-body > p:first-of-type strong { background: linear-gradient(transparent 58%, rgba(201, 138, 43, .38) 58%); padding: 0 .1rem; }
+		.guia h2 { margin: 2.4rem 0 .9rem; font-size: 1.4rem; padding-left: .8rem; border-left: 5px solid var(--color-petrol); }
+		.guia p, .guia li { color: var(--color-ink-soft); }
+		.guia p { margin: 0 0 1rem; }
+		.guia ul { padding-left: 1.2rem; }
+		.guia li { margin-bottom: .5rem; }
+		.guia table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 1.2rem 0 1.5rem; font-size: .95rem; border: 1px solid var(--color-line); border-radius: 10px; overflow: hidden; background: var(--color-bg-panel); }
+		.guia th { background: var(--color-petrol); color: #fff; text-align: left; padding: .65rem .8rem; font-weight: 600; }
+		.guia td { padding: .6rem .8rem; border-top: 1px solid var(--color-line); color: var(--color-ink); }
+		.guia tbody tr:nth-child(even) td { background: rgba(0, 0, 0, .025); }
+		.guia tbody tr:nth-child(2) td { background: rgba(201, 138, 43, .16); font-weight: 600; }
+		.guia td:not(:first-child) { font-family: var(--font-mono); white-space: nowrap; }
+		.guia .formula { font-family: var(--font-mono); background: var(--color-petrol-ink); color: #fff; padding: 1rem 1.2rem; border-radius: 8px; border-left: 6px solid var(--color-ochre); }
+		.btn { display: inline-block; background: var(--color-petrol); color: #fff; padding: .75rem 1.2rem; border-radius: 8px; text-decoration: none; font-weight: 700; white-space: nowrap; }
+		.btn-ochre { background: var(--color-ochre); color: var(--color-ink); }
+		.btn-ochre:hover { filter: brightness(1.08); }
+		.cta-mid { display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; margin: 2.2rem 0 0; padding: 1rem 1.3rem; background: var(--color-petrol-ink); border-radius: 10px; }
+		.cta-mid span { color: #fff; font-weight: 600; }
+		.guia .cta { display: flex; gap: 1.5rem; align-items: center; justify-content: space-between; flex-wrap: wrap; margin: 3rem 0 2.5rem; padding: 1.7rem 1.8rem; background: var(--color-petrol-ink); color: #fff; border-radius: 14px; }
+		.guia .cta strong { font-family: var(--font-display); font-size: 1.3rem; font-weight: 400; color: #fff; }
+		.guia .cta p { color: #cfe3e0; margin: .5rem 0 0; max-width: 28rem; }
+		.guia .mas ul { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: .8rem; }
+		.guia .mas li { margin: 0; }
+		.guia .mas a { display: block; height: 100%; padding: .9rem 1rem; background: var(--color-bg-panel); border: 1px solid var(--color-line); border-radius: 10px; color: var(--color-ink); text-decoration: none; font-weight: 600; line-height: 1.3; transition: transform .15s, border-color .15s; }
+		.guia .mas a:hover { transform: translateY(-2px); border-color: var(--color-petrol); }
+		.chip { display: block; width: fit-content; margin-bottom: .45rem; padding: .1rem .5rem; border-radius: 99px; background: rgba(43, 110, 110, .14); color: var(--color-petrol-ink); font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; }
 	</style>
 </Base>

@@ -1,5 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
+import Rodillo from "../components/Rodillo.astro";
+import { guias } from "../data/guias";
 ---
 
 <Base
@@ -31,6 +33,17 @@ import Base from "../layouts/Base.astro";
 						decimos los litros exactos, cuántos botes comprar y cuánto
 						tiempo te llevará.
 					</p>
+					<ul class="hero-badges">
+						<li>Gratis</li>
+						<li>Sin registro</li>
+						<li>Resultado al instante</li>
+					</ul>
+					<div class="hero-art" aria-hidden="true">
+						<Rodillo class="hero-roller" />
+						<div class="hero-swatches">
+							<span style="background:#c98a2b"></span><span style="background:#2b6e6e"></span><span style="background:#a83e2c"></span><span style="background:#6b7a55"></span><span style="background:#f6f4ee"></span>
+						</div>
+					</div>
 				</div>
 
 				<div class="calc-panel">
@@ -264,25 +277,11 @@ import Base from "../layouts/Base.astro";
 		<section class="content" id="guias">
 			<div class="wrap">
 				<h2>Guías de pintura</h2>
-				<ul>
-					<li><a href="/guias/cuantos-litros-de-pintura-por-m2/">¿Cuántos litros de pintura necesito por m²?</a></li>
-					<li><a href="/guias/cuanta-pintura-para-una-habitacion/">¿Cuánta pintura necesito para una habitación?</a></li>
-					<li><a href="/guias/cuanta-pintura-para-gotele/">¿Cuánta pintura necesito para gotelé?</a></li>
-					<li><a href="/guias/cuantas-manos-de-pintura-dar/">¿Cuántas manos de pintura hay que dar?</a></li>
-					<li><a href="/guias/cuanta-pintura-para-un-techo/">¿Cuánta pintura para el techo?</a></li>
-					<li><a href="/guias/cuantos-metros-pinta-un-bote-de-pintura/">¿Cuántos m² pinta un bote de pintura?</a></li>
-					<li><a href="/guias/cuanta-pintura-para-una-fachada/">¿Cuánta pintura para una fachada?</a></li>
-					<li><a href="/guias/pintar-sobre-pared-oscura/">¿Cómo pintar una pared oscura de claro?</a></li>
-					<li><a href="/guias/cuanto-tarda-en-secar-la-pintura/">¿Cuánto tarda en secar la pintura?</a></li>
-					<li><a href="/guias/pintura-para-cocina-y-bano/">Pintura para cocina y baño</a></li>
-					<li><a href="/guias/litros-de-pintura-para-50-m2/">¿Cuántos litros de pintura para 50 m²?</a></li>
-					<li><a href="/guias/litros-de-pintura-para-100-m2/">¿Cuántos litros de pintura para 100 m²?</a></li>
-					<li><a href="/guias/litros-de-pintura-para-un-salon/">¿Cuánta pintura necesito para pintar un salón?</a></li>
-					<li><a href="/guias/litros-de-pintura-para-un-piso-de-90-m2/">¿Cuánta pintura necesito para pintar un piso de 90 m²?</a></li>
-					<li><a href="/guias/litros-de-pintura-para-30-m2/">¿Cuántos litros de pintura necesito para 30 m²?</a></li>
-					<li><a href="/guias/cuanta-pintura-para-un-dormitorio/">¿Cuánta pintura necesito para un dormitorio?</a></li>
-					<li><a href="/guias/cuanta-pintura-para-un-pasillo/">¿Cuánta pintura necesito para pintar un pasillo?</a></li>
-					<li><a href="/guias/cuanta-pintura-para-una-pared/">¿Cuánta pintura necesito para pintar una pared?</a></li>
+				<p class="guias-intro">Tablas, ejemplos y consejos para calcular cuánta pintura comprar en cada caso.</p>
+				<ul class="guias-grid">
+					{guias.map((g) => (
+						<li><a href={`/guias/${g.slug}/`}><span class="chip">{g.tipo}</span>{g.corto}<span class="arrow" aria-hidden="true">→</span></a></li>
+					))}
 				</ul>
 			</div>
 		</section>
@@ -1144,6 +1143,24 @@ import Base from "../layouts/Base.astro";
 			color: var(--color-oxide-ink);
 			font-size: 0.72rem;
 		}
+	
+		/* Facelift */
+		.hero-badges { list-style: none; display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; margin: 1.3rem 0 0; }
+		.hero-badges li { margin: 0; padding: .3rem .8rem; border-radius: 99px; background: var(--color-petrol-ink); color: #fff; font-size: .85rem; font-weight: 600; }
+		.hero-art { display: none; }
+		@media (min-width: 900px) {
+			.hero-art { display: flex; align-items: center; gap: 1.5rem; margin-top: 2rem; padding: 1.2rem 1.4rem; background: var(--color-petrol-ink); border-radius: 14px; max-width: 34rem; }
+			.hero-roller { width: 8.5rem; height: auto; flex: none; }
+			.hero-swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: .5rem; flex: 1; }
+			.hero-swatches span { aspect-ratio: 1; border-radius: 8px; border: 2px solid rgba(255,255,255,.25); }
+		}
+		.guias-intro { color: var(--color-ink-soft); margin: -.3rem 0 1.4rem; max-width: 36rem; }
+		.guias-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: .8rem; }
+		.guias-grid li { margin: 0; }
+		.guias-grid a { position: relative; display: block; height: 100%; padding: .95rem 2rem .95rem 1rem; background: var(--color-bg-panel); border: 1px solid var(--color-line); border-radius: 10px; color: var(--color-ink); text-decoration: none; font-weight: 700; line-height: 1.3; transition: transform .15s, border-color .15s; }
+		.guias-grid a:hover { transform: translateY(-2px); border-color: var(--color-petrol); }
+		.guias-grid .arrow { position: absolute; right: 1rem; bottom: .9rem; color: var(--color-petrol); }
+		.chip { display: block; width: fit-content; margin-bottom: .45rem; padding: .1rem .5rem; border-radius: 99px; background: rgba(43,110,110,.14); color: var(--color-petrol-ink); font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 400; }
 	</style>
 
 	<script>

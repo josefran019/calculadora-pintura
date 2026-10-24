@@ -9,7 +9,9 @@ import Rodillo from "../components/Rodillo.astro";
 import { guias } from "../data/guias";
 const { title, description, h1 } = Astro.props;
 const actual = Astro.url.pathname.replace(/\/$/, "");
-const otras = guias.filter((g) => `/guias/${g.slug}` !== actual);
+const resto = guias.filter((g) => `/guias/${g.slug}` !== actual);
+const tipoActual = guias.find((g) => `/guias/${g.slug}` === actual)?.tipo;
+const otras = [...resto.filter((g) => g.tipo === tipoActual), ...resto.filter((g) => g.tipo !== tipoActual)].slice(0, 6);
 let cuerpo = await Astro.slots.render("default");
 const partes = cuerpo.split("<h2");
 if (partes.length > 3) {

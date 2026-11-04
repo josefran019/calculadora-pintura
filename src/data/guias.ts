@@ -21,6 +21,8 @@ export const guias: Guia[] = [
 	{ slug: "cuanta-pintura-para-el-techo-de-un-salon", titulo: "¿Cuánta pintura necesito para el techo de un salón?", corto: "Techo de un salón", tipo: "Por estancia", grupo: "Techo" },
 	{ slug: "como-pintar-un-techo-sin-marcas", titulo: "¿Cómo pintar un techo sin marcas?", corto: "Pintar sin marcas", tipo: "Consejos", grupo: "Techo" },
 	{ slug: "pintura-para-techo-con-manchas-de-humedad", titulo: "¿Cómo pintar un techo con manchas de humedad?", corto: "Techo con humedad", tipo: "Consejos", grupo: "Techo" },
+	{ slug: "cuantos-litros-trae-un-galon-de-pintura", titulo: "¿Cuántos litros trae un galón de pintura?", corto: "Litros en un galón", tipo: "Cálculo", grupo: "Dudas generales" },
+	{ slug: "cuantos-litros-de-pintura-necesito", titulo: "¿Cuántos litros de pintura necesito?", corto: "Cuántos litros necesito", tipo: "Cálculo", grupo: "Dudas generales" },
 ];
 
 export const grupos = ["Paredes", "Techo", "Dudas generales"];

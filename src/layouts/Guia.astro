@@ -7,8 +7,25 @@ interface Props {
 }
 import Rodillo from "../components/Rodillo.astro";
 import GuiasLista from "../components/GuiasLista.astro";
+import { faqs } from "../data/faqs";
 const { title, description, h1 } = Astro.props;
 const actual = Astro.url.pathname.replace(/\/$/, "");
+const slug = actual.replace(/^\/guias\//, "");
+const esIndice = actual === "/guias";
+const preguntas = faqs[slug] ?? [];
+const base = "https://calculatupintura.com";
+const migas = {
+	"@context": "https://schema.org",
+	"@type": "BreadcrumbList",
+	itemListElement: [
+		{ "@type": "ListItem", position: 1, name: "Inicio", item: base + "/" },
+		{ "@type": "ListItem", position: 2, name: "Guías", item: base + "/guias/" },
+		...(esIndice ? [] : [{ "@type": "ListItem", position: 3, name: h1 }]),
+	],
+};
+const faqLd = preguntas.length
+	? { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: preguntas.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) }
+	: null;
 let cuerpo = await Astro.slots.render("default");
 const partes = cuerpo.split("<h2");
 if (partes.length > 3) {
@@ -23,7 +40,7 @@ const ld = {
 	description,
 	inLanguage: "es",
 	datePublished: "2026-10-24",
-	dateModified: "2026-10-24",
+	dateModified: "2026-11-04",
 	mainEntityOfPage: url,
 	author: { "@type": "Person", name: "Jose" },
 	publisher: { "@type": "Organization", name: "CalculaTuPintura", url: "https://calculatupintura.com/" },
@@ -40,15 +57,35 @@ const ld = {
 	<section class="g-hero">
 		<div class="g-hero-in">
 			<div>
-				<a class="back" href="/">← Calculadora de pintura</a>
+				<nav class="crumbs" aria-label="Migas de pan">
+					<a href="/">Inicio</a><span aria-hidden="true">›</span>{esIndice ? <span>Guías</span> : <a href="/guias/">Guías</a>}
+				</nav>
 				<p class="g-eyebrow">Guía de pintura</p>
 				<h1>{h1}</h1>
+				{!esIndice && <p class="g-by">Por Jose · Actualizado el 4 de noviembre de 2026</p>}
 			</div>
 			<Rodillo class="g-illu" />
 		</div>
 	</section>
 	<main class="wrap guia">
 		<div class="guia-body" set:html={cuerpo} />
+		{preguntas.length > 0 && (
+			<section class="faq-g">
+				<h2>Preguntas frecuentes</h2>
+				{preguntas.map((f) => (
+					<div class="faq-item">
+						<h3>{f.q}</h3>
+						<p>{f.a}</p>
+					</div>
+				))}
+			</section>
+		)}
+		{!esIndice && slug !== "cuantos-litros-de-pintura-necesito" && (
+			<aside class="lectura">
+				<span>Guía principal</span>
+				<a href="/guias/cuantos-litros-de-pintura-necesito/">¿Cuántos litros de pintura necesito? Tabla rápida por m² y por estancia →</a>
+			</aside>
+		)}
 		<aside class="cta">
 			<div>
 				<strong>¿Quieres el cálculo exacto de tu casa?</strong>
@@ -56,12 +93,17 @@ const ld = {
 			</div>
 			<a class="btn btn-ochre" href="/">Abrir la calculadora</a>
 		</aside>
-		<nav class="mas" aria-label="Más guías">
-			<h2>Más guías</h2>
-			<GuiasLista actual={Astro.url.pathname} />
-		</nav>
+		{!esIndice && (
+			<nav class="mas" aria-label="Más guías">
+				<h2>Más guías</h2>
+				<GuiasLista actual={Astro.url.pathname} />
+				<p class="todas"><a href="/guias/">Ver todas las guías →</a></p>
+			</nav>
+		)}
 	</main>
 	<script type="application/ld+json" set:html={JSON.stringify(ld)} />
+	<script type="application/ld+json" set:html={JSON.stringify(migas)} />
+	{faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />}
 	<style is:global>
 		.g-top { background: var(--color-petrol-ink); }
 		.g-top-in { max-width: 46rem; margin: 0 auto; padding: .8rem 1.25rem; display: flex; justify-content: space-between; align-items: center; }
@@ -72,6 +114,18 @@ const ld = {
 		.g-hero { background: var(--color-petrol-ink); color: #fff; padding: 1.2rem 0 4.2rem; }
 		.g-hero-in { max-width: 46rem; margin: 0 auto; padding: 0 1.25rem; display: grid; grid-template-columns: 1fr 11rem; gap: 2rem; align-items: center; }
 		.g-hero .back { color: #cfe3e0; font-size: .85rem; text-decoration: none; }
+		.g-hero .crumbs { display: flex; gap: .5rem; align-items: center; font-size: .85rem; color: #cfe3e0; }
+		.g-hero .crumbs a { color: #cfe3e0; text-decoration: none; }
+		.g-hero .crumbs a:hover { color: #fff; text-decoration: underline; }
+		.g-by { margin: .9rem 0 0; font-size: .85rem; color: #cfe3e0; }
+		.faq-g { margin-top: 2.6rem; }
+		.faq-g .faq-item { padding: 1rem 0; border-top: 1px solid var(--color-line); }
+		.faq-g h3 { font-family: var(--font-body); font-weight: 700; font-size: 1.05rem; letter-spacing: 0; line-height: 1.3; color: var(--color-ink); margin: 0 0 .4rem; }
+		.faq-g .faq-item p { margin: 0; }
+		.lectura { margin: 2rem 0 0; padding: 1rem 1.2rem; background: rgba(201, 138, 43, .14); border-left: 6px solid var(--color-ochre); border-radius: 8px; }
+		.lectura span { display: block; font-family: var(--font-mono); font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; color: var(--color-ochre-ink); margin-bottom: .3rem; }
+		.lectura a { color: var(--color-ink); font-weight: 700; }
+		.guia .todas { margin: 1rem 0 0; }
 		.g-eyebrow { margin: 1.6rem 0 .6rem; font-family: var(--font-mono); font-size: .75rem; text-transform: uppercase; letter-spacing: .12em; color: var(--color-ochre); }
 		.g-hero h1 { color: #fff; font-size: clamp(1.7rem, 4.2vw, 2.7rem); margin: 0; }
 		.g-illu { width: 100%; height: auto; }

@@ -23,6 +23,14 @@ export const guias: Guia[] = [
 	{ slug: "pintura-para-techo-con-manchas-de-humedad", titulo: "¿Cómo pintar un techo con manchas de humedad?", corto: "Techo con humedad", tipo: "Consejos", grupo: "Techo" },
 	{ slug: "cuantos-litros-trae-un-galon-de-pintura", titulo: "¿Cuántos litros trae un galón de pintura?", corto: "Litros en un galón", tipo: "Cálculo", grupo: "Dudas generales" },
 	{ slug: "cuantos-litros-de-pintura-necesito", titulo: "¿Cuántos litros de pintura necesito?", corto: "Cuántos litros necesito", tipo: "Cálculo", grupo: "Dudas generales" },
+	{ slug: "litros-de-pintura-para-20-m2", titulo: "¿Cuántos litros de pintura necesito para 20 m²?", corto: "Pintura para 20 m²", tipo: "Cálculo", grupo: "Paredes" },
+	{ slug: "litros-de-pintura-para-60-m2", titulo: "¿Cuántos litros de pintura necesito para 60 m²?", corto: "Pintura para 60 m²", tipo: "Cálculo", grupo: "Paredes" },
+	{ slug: "litros-de-pintura-para-80-m2", titulo: "¿Cuántos litros de pintura necesito para 80 m²?", corto: "Pintura para 80 m²", tipo: "Cálculo", grupo: "Paredes" },
+	{ slug: "litros-de-pintura-para-120-m2", titulo: "¿Cuántos litros de pintura necesito para 120 m²?", corto: "Pintura para 120 m²", tipo: "Cálculo", grupo: "Paredes" },
+	{ slug: "litros-de-pintura-para-un-piso-de-60-m2", titulo: "¿Cuánta pintura necesito para pintar un piso de 60 m²?", corto: "Un piso de 60 m²", tipo: "Por estancia", grupo: "Paredes" },
+	{ slug: "rendimiento-de-la-pintura-plastica-por-litro", titulo: "¿Qué rendimiento tiene la pintura plástica por litro?", corto: "Rendimiento por litro", tipo: "Cálculo", grupo: "Dudas generales" },
+	{ slug: "pintura-plastica-acrilica-y-vinilica-diferencias", titulo: "¿Qué diferencia hay entre pintura plástica, acrílica y vinílica?", corto: "Plástica, acrílica, vinílica", tipo: "Consejos", grupo: "Dudas generales" },
+	{ slug: "cuanto-cuesta-pintar-un-piso", titulo: "¿Cuánto cuesta pintar un piso?", corto: "Cuánto cuesta pintar un piso", tipo: "Cálculo", grupo: "Dudas generales" },
 ];
 
 export const grupos = ["Paredes", "Techo", "Dudas generales"];

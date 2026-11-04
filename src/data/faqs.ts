@@ -115,4 +115,44 @@ export const faqs: Record<string, Faq[]> = {
 		{ q: "¿Y para 100 m²?", a: "Unos 22 litros a dos capas con el mismo rendimiento." },
 		{ q: "¿Qué fórmula uso para calcularlo?", a: "litros = (superficie ÷ rendimiento) × capas × 1,10. La superficie es la de pared que vas a pintar, sin puertas ni ventanas." },
 	],
+	"litros-de-pintura-para-20-m2": [
+		{ q: "¿Cuántos litros de pintura necesito para 20 m²?", a: "Unos 4,5 litros a dos capas en una pared normal (10 m²/L), con un 10 % de margen." },
+		{ q: "¿Y si la pared es de gotelé?", a: "Con 7 m²/L y dos capas, unos 6,5 litros." },
+		{ q: "¿Qué bote compro?", a: "Un bote de 5 L es lo más cómodo para 20 m² a dos capas." },
+	],
+	"litros-de-pintura-para-60-m2": [
+		{ q: "¿Cuántos litros de pintura necesito para 60 m²?", a: "Unos 11 litros a dos capas en pared lisa ya pintada (12 m²/L) y unos 13,5 litros en una pared normal (10 m²/L)." },
+		{ q: "¿Cuánta pintura para 60 m² de gotelé?", a: "Unos 19 litros a dos capas, con 7 m²/L." },
+		{ q: "¿Qué botes compro para 60 m²?", a: "Un bote de 15 L suele bastar, o uno de 10 L más otro de 4 L; con gotelé, uno de 20 L." },
+	],
+	"litros-de-pintura-para-80-m2": [
+		{ q: "¿Cuántos litros de pintura necesito para 80 m²?", a: "Unos 15 litros a dos capas en pared lisa ya pintada (12 m²/L) y unos 18 litros en una pared normal (10 m²/L)." },
+		{ q: "¿Cuánta pintura para 80 m² de gotelé?", a: "Unos 25,5 litros a dos capas, con 7 m²/L." },
+		{ q: "¿Qué botes compro para 80 m²?", a: "Uno de 15 L más otro de 4 L, o uno de 20 L si quieres margen para retoques." },
+	],
+	"litros-de-pintura-para-120-m2": [
+		{ q: "¿Cuántos litros de pintura necesito para 120 m²?", a: "Unos 22 litros a dos capas en pared lisa ya pintada (12 m²/L) y unos 26,5 litros en una pared normal (10 m²/L)." },
+		{ q: "¿Cuánta pintura para 120 m² de gotelé?", a: "Unos 38 litros a dos capas, con 7 m²/L." },
+		{ q: "¿Qué botes compro para 120 m²?", a: "Uno de 20 L más otro de 10 L, o dos de 15 L." },
+	],
+	"litros-de-pintura-para-un-piso-de-60-m2": [
+		{ q: "¿Cuánta pintura necesito para un piso de 60 m²?", a: "Aproximadamente 32,5 litros para las paredes y 13,5 litros para los techos, a dos capas en pared lisa." },
+		{ q: "¿Cómo se estima la superficie de paredes de un piso?", a: "Como referencia, unas 2,45 veces la superficie útil una vez descontadas puertas y ventanas." },
+		{ q: "¿Cuántos botes tengo que comprar?", a: "Para las paredes, un bote de 20 L más uno de 15 L, o dos de 15 L; y uno de 15 L para los techos si usas otra pintura." },
+	],
+	"rendimiento-de-la-pintura-plastica-por-litro": [
+		{ q: "¿Cuántos m² rinde un litro de pintura plástica?", a: "Entre 10 y 14 m² por litro en una pared lisa ya pintada, y entre 5 y 7 m² en gotelé o superficies porosas." },
+		{ q: "¿Dónde veo el rendimiento exacto de mi pintura?", a: "En la etiqueta del bote o en la ficha técnica del fabricante. Es el dato definitivo." },
+		{ q: "¿El rendimiento es por capa?", a: "Sí. El rendimiento indicado es por cada capa de pintura; para dos capas, necesitas el doble." },
+	],
+	"pintura-plastica-acrilica-y-vinilica-diferencias": [
+		{ q: "¿La pintura plástica es al agua?", a: "Sí. En España, «pintura plástica» es el nombre habitual de la pintura al agua para paredes y techos." },
+		{ q: "¿Qué diferencia hay entre pintura vinílica y acrílica?", a: "En general, la vinílica es más económica y de uso interior, y la acrílica es más resistente y lavable y se usa también en exterior." },
+		{ q: "¿Qué pintura uso en cocina y baño?", a: "Una lavable con protección antimoho o antihumedad." },
+	],
+	"cuanto-cuesta-pintar-un-piso": [
+		{ q: "¿Cuánto cuesta pintar un piso de 90 m²?", a: "Con pintor, entre 870 y 1.150 € aproximadamente con pintura blanca, según las estimaciones de Habitissimo y Cronoshare de 2026." },
+		{ q: "¿Cuánto cobra un pintor por m²?", a: "Entre 10 y 14 € por m² pintado, con mano de obra y material incluidos, según esas mismas guías." },
+		{ q: "¿Cómo calculo el gasto si pinto yo?", a: "Multiplica los litros que necesitas por el precio por litro del bote que elijas, y suma los útiles (rodillos, cinta y plásticos)." },
+	],
 };

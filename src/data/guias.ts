@@ -37,6 +37,12 @@ export const guias: Guia[] = [
 	{ slug: "cuanta-pintura-para-una-puerta", titulo: "¿Cuánta pintura necesito para una puerta?", corto: "Una puerta", tipo: "Por estancia", grupo: "Paredes" },
 	{ slug: "litros-de-pintura-para-un-piso-de-70-m2", titulo: "¿Cuánta pintura necesito para pintar un piso de 70 m²?", corto: "Un piso de 70 m²", tipo: "Por estancia", grupo: "Paredes" },
 	{ slug: "litros-de-pintura-para-40-m2", titulo: "¿Cuántos litros de pintura necesito para 40 m²?", corto: "Pintura para 40 m²", tipo: "Cálculo", grupo: "Paredes" },
+	{ slug: "litros-de-pintura-para-un-piso-de-50-m2", titulo: "¿Cuánta pintura necesito para pintar un piso de 50 m²?", corto: "Un piso de 50 m²", tipo: "Por estancia", grupo: "Paredes" },
+	{ slug: "litros-de-pintura-para-un-piso-de-100-m2", titulo: "¿Cuánta pintura necesito para pintar un piso de 100 m²?", corto: "Un piso de 100 m²", tipo: "Por estancia", grupo: "Paredes" },
+	{ slug: "litros-de-pintura-para-70-m2", titulo: "¿Cuántos litros de pintura necesito para 70 m²?", corto: "Pintura para 70 m²", tipo: "Cálculo", grupo: "Paredes" },
+	{ slug: "cuanta-pintura-para-una-habitacion-infantil", titulo: "¿Cuánta pintura necesito para una habitación infantil?", corto: "Habitación infantil", tipo: "Por estancia", grupo: "Paredes" },
+	{ slug: "cuanta-pintura-para-un-garaje", titulo: "¿Cuánta pintura necesito para un garaje?", corto: "Un garaje", tipo: "Por estancia", grupo: "Paredes" },
+	{ slug: "cuanta-pintura-para-una-escalera", titulo: "¿Cuánta pintura necesito para el hueco de una escalera?", corto: "Hueco de escalera", tipo: "Por estancia", grupo: "Paredes" },
 ];
 
 export const grupos = ["Paredes", "Techo", "Dudas generales"];

@@ -185,4 +185,34 @@ export const faqs: Record<string, Faq[]> = {
 		{ q: "¿Cuánta pintura para 40 m² de gotelé?", a: "Unos 13 L a dos capas, con 7 m²/L." },
 		{ q: "¿Qué bote compro para 40 m²?", a: "Uno de 10 L para pared normal; con gotelé, uno de 15 L." },
 	],
+	"cuanta-pintura-para-una-habitacion-infantil": [
+		{ q: "¿Cuánta pintura necesito para una habitación infantil de 3 × 3,2 m?", a: "Unos 6,5 L para las paredes y 2,5 L para el techo a dos capas, en pared normal (10 m²/L)." },
+		{ q: "¿Y si la pared es de gotelé?", a: "Con 7 m²/L y dos capas, unos 9 L para las paredes." },
+		{ q: "¿Qué bote compro?", a: "Para las paredes, un bote de 10 L." },
+	],
+	"cuanta-pintura-para-un-garaje": [
+		{ q: "¿Cuánta pintura necesito para un garaje de 3 × 5 m?", a: "Unos 7,5 L para las paredes y 3,5 L para el techo a dos capas, en pared normal (10 m²/L)." },
+		{ q: "¿Y si la pared es de gotelé?", a: "Con 7 m²/L y dos capas, unos 10,5 L para las paredes." },
+		{ q: "¿Qué bote compro?", a: "Para las paredes, un bote de 10 L." },
+	],
+	"cuanta-pintura-para-una-escalera": [
+		{ q: "¿Cuánta pintura necesito para el hueco de una escalera de dos plantas?", a: "Unos 11,5 L para las paredes y 2 L para el techo a dos capas, en pared normal (10 m²/L)." },
+		{ q: "¿Y si la pared es de gotelé?", a: "Con 7 m²/L y dos capas, unos 16,5 L para las paredes." },
+		{ q: "¿Qué bote compro?", a: "Para las paredes, un bote de 15 L." },
+	],
+	"litros-de-pintura-para-un-piso-de-50-m2": [
+		{ q: "¿Cuánta pintura necesito para un piso de 50 m²?", a: "Unos 38 L a dos capas en pared normal: 27 L de paredes y 11 L de techos." },
+		{ q: "¿Cuánta pintura para un piso de 50 m² con gotelé?", a: "Unos 54,5 L a dos capas, con 7 m²/L." },
+		{ q: "¿Cómo se estima la superficie de paredes?", a: "En un piso normal, unas 2,45 veces la superficie útil, ya descontadas puertas y ventanas." },
+	],
+	"litros-de-pintura-para-un-piso-de-100-m2": [
+		{ q: "¿Cuánta pintura necesito para un piso de 100 m²?", a: "Unos 76 L a dos capas en pared normal: 54 L de paredes y 22 L de techos." },
+		{ q: "¿Cuánta pintura para un piso de 100 m² con gotelé?", a: "Unos 108,5 L a dos capas, con 7 m²/L." },
+		{ q: "¿Cómo se estima la superficie de paredes?", a: "En un piso normal, unas 2,45 veces la superficie útil, ya descontadas puertas y ventanas." },
+	],
+	"litros-de-pintura-para-70-m2": [
+		{ q: "¿Cuántos litros de pintura necesito para 70 m²?", a: "Unos 13 L a dos capas en pared lisa ya pintada (12 m²/L) y unos 15,5 L en una pared normal (10 m²/L)." },
+		{ q: "¿Cuánta pintura para 70 m² de gotelé?", a: "Unos 22 L a dos capas, con 7 m²/L." },
+		{ q: "¿Qué bote compro para 70 m²?", a: "Para pared normal, un bote de 20 L." },
+	],
 };

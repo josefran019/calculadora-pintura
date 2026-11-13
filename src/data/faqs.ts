@@ -155,4 +155,34 @@ export const faqs: Record<string, Faq[]> = {
 		{ q: "¿Cuánto cobra un pintor por m²?", a: "Entre 10 y 14 € por m² pintado, con mano de obra y material incluidos, según esas mismas guías." },
 		{ q: "¿Cómo calculo el gasto si pinto yo?", a: "Multiplica los litros que necesitas por el precio por litro del bote que elijas, y suma los útiles (rodillos, cinta y plásticos)." },
 	],
+	"cuanta-pintura-para-un-bano": [
+		{ q: "¿Cuánta pintura necesito para un baño pequeño?", a: "Unos 4,5 L para las paredes y 1 L para el techo a dos capas, en un baño de 2,5 × 1,8 m sin azulejos." },
+		{ q: "¿Qué pintura es mejor para un baño?", a: "Una pintura antihumedad o antimoho, lavable y con acabado satinado o mate resistente." },
+		{ q: "¿Pinto la parte de los azulejos?", a: "No. Descuenta la parte alicatada: solo se pinta la superficie que queda sin azulejos." },
+	],
+	"cuanta-pintura-para-una-cocina": [
+		{ q: "¿Cuánta pintura necesito para una cocina de 3 × 3,5 m?", a: "Unos 6,5 L para las paredes y 2,5 L para el techo a dos capas, sin descontar azulejos ni muebles." },
+		{ q: "¿Qué pintura va bien en una cocina?", a: "Una lavable, resistente a la grasa y al vapor." },
+		{ q: "¿Qué hago antes de pintar la cocina?", a: "Limpiar con desengrasante, sobre todo cerca de la campana y los fuegos, para que la pintura agarre." },
+	],
+	"rendimiento-del-esmalte-por-litro": [
+		{ q: "¿Cuántos m² pinta un litro de esmalte?", a: "Orientativamente entre 10 y 14 m² por mano; a dos manos, entre 5 y 7 m² por litro." },
+		{ q: "¿Cuánto esmalte necesito para 10 m² a dos manos?", a: "Con 12 m²/L, unos 2 L incluyendo un 10 % de margen." },
+		{ q: "¿Dónde veo el rendimiento exacto?", a: "En el envase de tu esmalte; varía según marca, color y superficie." },
+	],
+	"cuanta-pintura-para-una-puerta": [
+		{ q: "¿Cuánta pintura necesito para una puerta?", a: "Unos 0,75 L de esmalte a dos manos, contando las dos caras, el marco y los cantos." },
+		{ q: "¿Y para 6 puertas?", a: "Unos 4 L a dos manos, con 12 m²/L y un 10 % de margen." },
+		{ q: "¿Hace falta imprimación?", a: "Si la madera es nueva, está muy desgastada o cambias a un color claro, sí; mejora el agarre y la cobertura." },
+	],
+	"litros-de-pintura-para-un-piso-de-70-m2": [
+		{ q: "¿Cuánta pintura necesito para un piso de 70 m²?", a: "Unos 53,5 L a dos capas en pared normal: 38 L de paredes y 15,5 L de techos." },
+		{ q: "¿Cuánta pintura para un piso de 70 m² con gotelé?", a: "Unos 76 L a dos capas, con 7 m²/L." },
+		{ q: "¿Cómo se estima la superficie de paredes?", a: "En un piso normal, unas 2,45 veces la superficie útil, ya descontadas puertas y ventanas." },
+	],
+	"litros-de-pintura-para-40-m2": [
+		{ q: "¿Cuántos litros de pintura necesito para 40 m²?", a: "Unos 7,5 L a dos capas en pared lisa ya pintada (12 m²/L) y unos 9 L en una pared normal (10 m²/L)." },
+		{ q: "¿Cuánta pintura para 40 m² de gotelé?", a: "Unos 13 L a dos capas, con 7 m²/L." },
+		{ q: "¿Qué bote compro para 40 m²?", a: "Uno de 10 L para pared normal; con gotelé, uno de 15 L." },
+	],
 };

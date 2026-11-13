@@ -31,6 +31,12 @@ export const guias: Guia[] = [
 	{ slug: "rendimiento-de-la-pintura-plastica-por-litro", titulo: "¿Qué rendimiento tiene la pintura plástica por litro?", corto: "Rendimiento por litro", tipo: "Cálculo", grupo: "Dudas generales" },
 	{ slug: "pintura-plastica-acrilica-y-vinilica-diferencias", titulo: "¿Qué diferencia hay entre pintura plástica, acrílica y vinílica?", corto: "Plástica, acrílica, vinílica", tipo: "Consejos", grupo: "Dudas generales" },
 	{ slug: "cuanto-cuesta-pintar-un-piso", titulo: "¿Cuánto cuesta pintar un piso?", corto: "Cuánto cuesta pintar un piso", tipo: "Cálculo", grupo: "Dudas generales" },
+	{ slug: "cuanta-pintura-para-un-bano", titulo: "¿Cuánta pintura necesito para un baño?", corto: "Un baño", tipo: "Por estancia", grupo: "Paredes" },
+	{ slug: "cuanta-pintura-para-una-cocina", titulo: "¿Cuánta pintura necesito para una cocina?", corto: "Una cocina", tipo: "Por estancia", grupo: "Paredes" },
+	{ slug: "rendimiento-del-esmalte-por-litro", titulo: "¿Qué rendimiento tiene el esmalte por litro?", corto: "Rendimiento del esmalte", tipo: "Cálculo", grupo: "Dudas generales" },
+	{ slug: "cuanta-pintura-para-una-puerta", titulo: "¿Cuánta pintura necesito para una puerta?", corto: "Una puerta", tipo: "Por estancia", grupo: "Paredes" },
+	{ slug: "litros-de-pintura-para-un-piso-de-70-m2", titulo: "¿Cuánta pintura necesito para pintar un piso de 70 m²?", corto: "Un piso de 70 m²", tipo: "Por estancia", grupo: "Paredes" },
+	{ slug: "litros-de-pintura-para-40-m2", titulo: "¿Cuántos litros de pintura necesito para 40 m²?", corto: "Pintura para 40 m²", tipo: "Cálculo", grupo: "Paredes" },
 ];
 
 export const grupos = ["Paredes", "Techo", "Dudas generales"];
